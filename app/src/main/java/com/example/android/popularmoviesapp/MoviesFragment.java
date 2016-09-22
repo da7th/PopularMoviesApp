@@ -1,5 +1,6 @@
 package com.example.android.popularmoviesapp;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -31,6 +32,17 @@ public class MoviesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_movies,container,false);
 
         return rootView;
+    }
+
+
+    public class fetchMovies extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
+
 
     }
+
 }
