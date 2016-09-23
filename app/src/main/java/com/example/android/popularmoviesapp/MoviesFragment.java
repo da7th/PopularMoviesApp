@@ -19,9 +19,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+
+import javax.net.ssl.HttpsURLConnection;
 
 
 /**
@@ -39,26 +40,39 @@ public class MoviesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        Log.d(MoviesFragment.class.getSimpleName(), "In onCreateView");
+
         mMovieAdapter = new MovieAdapater(getContext(), new ArrayList<Movie>());
+        Log.d(MoviesFragment.class.getSimpleName(), "Movie adapter created");
 
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
+        Log.d(MoviesFragment.class.getSimpleName(), "rootView fragment inflated");
 
         GridView gridView = (GridView) rootView.findViewById(R.id.movie_grid);
+        Log.d(MoviesFragment.class.getSimpleName(), "GridView found");
 
         gridView.setAdapter(mMovieAdapter);
+        Log.d(MoviesFragment.class.getSimpleName(), "adapter set on gridview");
 
         return rootView;
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Log.d(MoviesFragment.class.getSimpleName(), "inside OnStart method");
+
         populateGrid();
+        Log.d(MoviesFragment.class.getSimpleName(), "populate grid called");
     }
 
     private void populateGrid() {
         fetchMoviesTask fetchMovies = new fetchMoviesTask();
+        Log.d(MoviesFragment.class.getSimpleName(), "inside populate grid method, fetchMovie task created");
+
         fetchMovies.execute("popular");
+        Log.d(MoviesFragment.class.getSimpleName(), "inside populate grid, fetchMovies executed");
     }
 
     public class fetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
@@ -68,17 +82,27 @@ public class MoviesFragment extends Fragment {
         @Override
         protected Movie[] doInBackground(String... params) {
 
+
+            Log.d(fetchMoviesTask.class.getSimpleName(), "inside AsyncTask, doInBackground");
+
             if (params.length == 0) {
+
+                Log.d(MoviesFragment.class.getSimpleName(), "params length = 0 returning null");
+
                 return null;
             }
 
 
-            HttpURLConnection urlConnection = null;
+            HttpsURLConnection urlConnection = null;
             BufferedReader reader = null;
-            String movieJsonStr = null;
+            String movieJsonStr = "";
+            Log.d(MoviesFragment.class.getSimpleName(), "instantiated httpconnection, reader and jsonstring variables");
 
 
             try {
+
+
+                Log.d(MoviesFragment.class.getSimpleName(), "inside the try statement");
 
                 final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie";
                 final String ORDER_MODE = params[0];
@@ -89,39 +113,54 @@ public class MoviesFragment extends Fragment {
                         .appendPath(ORDER_MODE)
                         .appendQueryParameter(API_KEY, BuildConfig.MOVIES_DB_API_KEY)
                         .build();
+                Log.d(MoviesFragment.class.getSimpleName(), "uri built");
 
                 URL url = new URL(uri.toString());
+                Log.d(MoviesFragment.class.getSimpleName(), "url made: " + url);
 
-                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection = (HttpsURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
+                Log.d(MoviesFragment.class.getSimpleName(), "url connected");
 
                 InputStream inputStream = urlConnection.getInputStream();
+                Log.d(MoviesFragment.class.getSimpleName(), "inputstream received");
+
                 StringBuffer buffer = new StringBuffer();
 
                 if (inputStream == null) {
+
+                    Log.d(MoviesFragment.class.getSimpleName(), "inputstream = null");
                     return null;
                 }
 
                 reader = new BufferedReader(new InputStreamReader(inputStream));
+                Log.d(MoviesFragment.class.getSimpleName(), "reading inputStream to reader");
 
                 String line;
                 while ((line = reader.readLine()) != null) {
 
                     buffer.append(line + "\n");
+                    Log.d(MoviesFragment.class.getSimpleName(), "appended line to buffer");
+
                 }
 
                 if (buffer.length() == 0) {
+
+                    Log.d(MoviesFragment.class.getSimpleName(), "buffer length = 0");
                     return null;
                 }
 
                 movieJsonStr = buffer.toString();
+                Log.d(MoviesFragment.class.getSimpleName(), "changed buffer to string");
 
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.d(MoviesFragment.class.getSimpleName(), "caught IO exception");
             } finally {
                 if (urlConnection != null) {
 
+                    Log.d(MoviesFragment.class.getSimpleName(), "url disconnected");
                     urlConnection.disconnect();
                 }
 
@@ -129,13 +168,16 @@ public class MoviesFragment extends Fragment {
 
                     try {
                         reader.close();
+                        Log.d(MoviesFragment.class.getSimpleName(), "reader closed");
                     } catch (IOException e) {
                         e.printStackTrace();
+                        Log.d(MoviesFragment.class.getSimpleName(), "closing reader exception caught");
                     }
                 }
             }
 
             try {
+                Log.d(MoviesFragment.class.getSimpleName(), "getting movie data from json");
                 return getMovieDataFromJson(movieJsonStr);
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
@@ -147,6 +189,9 @@ public class MoviesFragment extends Fragment {
 
 
         private Movie[] getMovieDataFromJson(String movieJsonStr) throws JSONException {
+
+
+            Log.d(MoviesFragment.class.getSimpleName(), "getMovie data from json entered");
 
             final String MDB_POSTER_PATH = "poster_path";
             final String MDB_ADULT = "adult";
@@ -182,9 +227,11 @@ public class MoviesFragment extends Fragment {
 
             JSONArray resultsArray = rootObject.getJSONArray(MDB_RESULTS);
 
-            Movie[] movies = null;
+            Movie[] movies = new Movie[resultsArray.length()];
 
             for (int i = 0; i < resultsArray.length(); i++) {
+
+                Log.d(MoviesFragment.class.getSimpleName(), "inside the loop for movie objects");
 
                 JSONObject movieObject = resultsArray.getJSONObject(i);
 
@@ -208,22 +255,34 @@ public class MoviesFragment extends Fragment {
                 movies[i] = new Movie(posterPath, adult, overview, releaseDate, id, originalTitle,
                         originalLanguage, title, backdropPath, popularity, voteCount, video, voteAverage);
 
+                Log.d(MoviesFragment.class.getSimpleName(), posterPath + "\n" + adult + "\n" +
+                        overview + "\n" + releaseDate + "\n" + id + "\n" + originalTitle + "\n" +
+                        originalLanguage + "\n" + title + "\n" + backdropPath + "\n" + popularity +
+                        "\n" + voteCount + "\n" + video + "\n" + voteAverage);
+
             }
 
+            Log.d(MoviesFragment.class.getSimpleName(), "returning movies array");
             return movies;
         }
 
         @Override
         protected void onPostExecute(Movie[] movies) {
+
+            Log.d(MoviesFragment.class.getSimpleName(), "inside post execute");
+
             if (movies != null) {
+
+                Log.d(MoviesFragment.class.getSimpleName(), "movies array is not null");
+
                 mMovieAdapter.clear();
+                Log.d(MoviesFragment.class.getSimpleName(), "adapter cleared");
+
                 for (Movie movie : movies) {
+                    Log.d(MoviesFragment.class.getSimpleName(), "movie added to adapter");
                     mMovieAdapter.add(movie);
                 }
             }
         }
     }
-
-
-
 }
