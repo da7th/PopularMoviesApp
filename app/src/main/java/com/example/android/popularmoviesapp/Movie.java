@@ -18,14 +18,14 @@ public class Movie {
     private String mOriginalLanguage;
     private String mTitle;
     private String mBackdropPath;
-    private float mPopularity;
+    private long mPopularity;
     private int mVoteCount;
     private Boolean mVideo;
     private double mVoteAverage;
 
     public Movie(String posterPath, Boolean adult, String overview, String releaseDate, int id,
                  String originalTitle, String originalLanguage, String title, String backdropPath,
-                 float popularity, int voteCount, Boolean video, double voteAverage) {
+                 long popularity, int voteCount, Boolean video, double voteAverage) {
 
         mPosterPath = posterPath;
         mAdult = adult;
@@ -79,7 +79,7 @@ public class Movie {
         return mBackdropPath;
     }
 
-    public float getPopularity() {
+    public long getPopularity() {
         return mPopularity;
     }
 
