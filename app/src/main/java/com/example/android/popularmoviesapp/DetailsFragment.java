@@ -50,8 +50,6 @@ public class DetailsFragment extends AppCompatActivity {
         ratingsTV.setText(voteAverage + "/10 (" + voteCount + ")");
         releaseDateTV.setText(releaseDate.substring(0, 4));
 
-
         Picasso.with(this).load(posterPath).into(thumbnailIV);
-
     }
 }
