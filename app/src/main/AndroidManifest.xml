@@ -17,6 +17,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".DetailsFragment"
+            android:parentActivityName=".MainActivity"
+            android:label="Movie Details"
+            android:immersive="true"></activity>
+
     </application>
 
 </manifest>

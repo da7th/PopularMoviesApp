@@ -1,5 +1,6 @@
 package com.example.android.popularmoviesapp;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import org.json.JSONArray;
@@ -33,7 +35,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class MoviesFragment extends Fragment {
 
-    private MovieAdapater mMovieAdapter;
+    private MovieAdapter mMovieAdapter;
 
     public MoviesFragment(){
     }
@@ -50,13 +52,53 @@ public class MoviesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
-        mMovieAdapter = new MovieAdapater(getContext(), new ArrayList<Movie>());
+        mMovieAdapter = new MovieAdapter(getContext(), new ArrayList<Movie>());
 
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
 
         GridView gridView = (GridView) rootView.findViewById(R.id.movie_grid);
 
         gridView.setAdapter(mMovieAdapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Movie currentMovie = mMovieAdapter.getItem(position);
+
+                String posterPath = currentMovie.getPosterPath();
+                Boolean adult = currentMovie.getAdult();
+                String overview = currentMovie.getOverview();
+                String releaseDate = currentMovie.getReleaseDate();
+                int _id = currentMovie.getID();
+                String originalTitle = currentMovie.getOriginalTitle();
+                String originalLanguage = currentMovie.getOriginalLanguage();
+                String title = currentMovie.getTitle();
+                String backdropPath = currentMovie.getBackdropPath();
+                long popularity = currentMovie.getPopularity();
+                int voteCount = currentMovie.getVoteCount();
+                Boolean video = currentMovie.getVideo();
+                double voteAverage = currentMovie.getVoteAverage();
+
+                Bundle currentMovieBundle = new Bundle();
+                currentMovieBundle.putString("posterPath", posterPath);
+                currentMovieBundle.putBoolean("adult", adult);
+                currentMovieBundle.putString("overview", overview);
+                currentMovieBundle.putString("releaseDate", releaseDate);
+                currentMovieBundle.putInt("id", _id);
+                currentMovieBundle.putString("originalTitle", originalTitle);
+                currentMovieBundle.putString("originalLanguage", originalLanguage);
+                currentMovieBundle.putString("title", title);
+                currentMovieBundle.putString("backdropPath", backdropPath);
+                currentMovieBundle.putLong("popularity", popularity);
+                currentMovieBundle.putInt("voteCount", voteCount);
+                currentMovieBundle.putBoolean("video", video);
+                currentMovieBundle.putDouble("voteAverage", voteAverage);
+
+                startActivity(new Intent(getActivity(), DetailsFragment.class).putExtras(currentMovieBundle));
+
+            }
+        });
 
         return rootView;
 
@@ -223,8 +265,8 @@ public class MoviesFragment extends Fragment {
                 video = movieObject.getBoolean(MDB_VIDEO);
                 voteAverage = movieObject.getDouble(MDB_VOTE_AVERAGE);
 
-                posterPath = "http://image.tmdb.org/t/p/w185" + posterPath;
-                backdropPath = "http://image.tmdb.org/t/p/w185" + backdropPath;
+                posterPath = "http://image.tmdb.org/t/p/w342" + posterPath;
+                backdropPath = "http://image.tmdb.org/t/p/w342" + backdropPath;
 
                 movies[i] = new Movie(posterPath, adult, overview, releaseDate, id, originalTitle,
                         originalLanguage, title, backdropPath, popularity, voteCount, video, voteAverage);
@@ -253,4 +295,6 @@ public class MoviesFragment extends Fragment {
             }
         }
     }
+
+
 }

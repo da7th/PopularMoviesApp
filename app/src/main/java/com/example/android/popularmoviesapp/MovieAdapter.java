@@ -18,10 +18,10 @@ import java.util.ArrayList;
 //a custom adapter to take in movie type objects to extract and sort the relevant information accor
 // -dingly in the grid layout
 
-public class MovieAdapater extends ArrayAdapter<Movie> {
+public class MovieAdapter extends ArrayAdapter<Movie> {
 
 
-    public MovieAdapater(Context context, ArrayList<Movie> resource) {
+    public MovieAdapter(Context context, ArrayList<Movie> resource) {
         super(context, 0, resource);
     }
 
