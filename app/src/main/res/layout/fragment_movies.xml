@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <GridView
-        android:columnWidth="0dp"
-        android:layout_weight="1"
-        android:numColumns="auto_fit"
-        android:layout_gravity="fill"
+        android:id="@+id/movie_grid"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:id="@+id/movie_grid">
+        android:layout_height="match_parent"
+        android:layout_gravity="center|fill"
+        android:horizontalSpacing="0dp"
+        android:numColumns="auto_fit"
+        android:hapticFeedbackEnabled="true"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="0dp">
 
     </GridView>
 </LinearLayout>

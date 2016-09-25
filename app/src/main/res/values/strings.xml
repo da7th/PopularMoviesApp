@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">Popular Movies App</string>
+
+    <string name="pref_sort_key" translatable="false">sorting</string>
+    <string name="pref_sort_title">Sort Movies</string>
+    <string name="sort_options_label_popular">Sort by popularity</string>
+    <string name="sort_options_label_latest">Sort by latest movie</string>
+    <string name="sort_options_value_popular" translatable="false">popular</string>
+    <string name="sort_options_value_latest" translatable="false">latest</string>
+
+    <array name="pref_sort_options_labels">
+        <item>@string/sort_options_label_latest</item>
+        <item>@string/sort_options_label_popular</item>
+    </array>
+
+    <array name="pref_sort_options_values">
+        <item>@string/sort_options_value_latest</item>
+        <item>@string/sort_options_value_popular</item>
+    </array>
+
+    <string name="action_sort">Sort Movies</string>
 </resources>
