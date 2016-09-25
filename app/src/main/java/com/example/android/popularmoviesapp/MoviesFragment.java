@@ -266,7 +266,7 @@ public class MoviesFragment extends Fragment {
                 voteAverage = movieObject.getDouble(MDB_VOTE_AVERAGE);
 
                 posterPath = "http://image.tmdb.org/t/p/w342" + posterPath;
-                backdropPath = "http://image.tmdb.org/t/p/w342" + backdropPath;
+                backdropPath = "http://image.tmdb.org/t/p/original" + backdropPath;
 
                 movies[i] = new Movie(posterPath, adult, overview, releaseDate, id, originalTitle,
                         originalLanguage, title, backdropPath, popularity, voteCount, video, voteAverage);

@@ -1,77 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/details_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
 
-        <TextView
-            android:id="@+id/fragment_movies_details_title"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Movie Title"
-            android:textSize="45sp"
-            android:gravity="bottom|left"
-            android:paddingBottom="34dp"
-            android:paddingLeft="34dp"
-            android:paddingRight="34dp"
-            android:paddingTop="50dp"
-            android:textColor="@android:color/white"
-            android:background="#123643" />
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/image_backdrop_background"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="fitXY"
+                tools:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/fragment_movies_details_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="bottom|left"
+                android:paddingBottom="34dp"
+                android:paddingLeft="34dp"
+                android:paddingRight="34dp"
+                android:paddingTop="50dp"
+                android:shadowColor="@android:color/black"
+                android:shadowRadius="20"
+                android:textColor="@android:color/white"
+                android:textSize="45sp"
+                tools:text="Movie Title" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingTop="8dp"
+            android:paddingBottom="18dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:paddingBottom="18dp">
+            android:paddingTop="8dp">
 
             <ImageView
-                android:padding="8dp"
                 android:id="@+id/fragment_movies_details_thumbnail"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:scaleType="fitStart"
+                android:layout_weight="1"
                 android:adjustViewBounds="true"
+                android:padding="8dp"
+                android:scaleType="fitStart"
                 tools:src="@mipmap/ic_launcher" />
 
             <LinearLayout
-                android:layout_gravity="center"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/fragment_movies_details_release_date"
-                    android:padding="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="2015"
-                    android:textSize="30sp" />
+                    android:padding="8dp"
+                    android:textSize="30sp"
+                    tools:text="2015" />
 
                 <TextView
                     android:id="@+id/fragment_movies_details_rating"
-                    android:padding="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="8dp"
                     tools:text="8.1/10" />
 
                 <Button
-                    android:padding="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mark as Favourite"
                     android:background="#123643"
+                    android:padding="8dp"
+                    android:text="Mark as Favourite"
                     android:textColor="@android:color/white" />
 
             </LinearLayout>
@@ -81,25 +96,25 @@
 
         <TextView
             android:id="@+id/fragment_movies_details_overview"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             tools:text="AJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJAJJJJJJJJJJJJJJJ" />
 
         <TextView
-            android:layout_margin="16dp"
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_margin="16dp"
             android:background="#123643" />
 
         <TextView
-            android:padding="16dp"
-            android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Trailers:" />
+            android:padding="16dp"
+            android:text="Trailers:"
+            android:textSize="20sp" />
 
 
     </LinearLayout>

@@ -2,8 +2,10 @@ package com.example.android.popularmoviesapp;
 
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ import com.squareup.picasso.Picasso;
 
 public class DetailsFragment extends AppCompatActivity {
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +42,7 @@ public class DetailsFragment extends AppCompatActivity {
         Boolean video = currentMovieBundle.getBoolean("video");
         double voteAverage = currentMovieBundle.getDouble("voteAverage");
 
-        TextView titleTV = (TextView) findViewById(R.id.fragment_movies_details_title);
+        final TextView titleTV = (TextView) findViewById(R.id.fragment_movies_details_title);
         TextView overviewTV = (TextView) findViewById(R.id.fragment_movies_details_overview);
         TextView ratingsTV = (TextView) findViewById(R.id.fragment_movies_details_rating);
         TextView releaseDateTV = (TextView) findViewById(R.id.fragment_movies_details_release_date);
@@ -51,5 +54,7 @@ public class DetailsFragment extends AppCompatActivity {
         releaseDateTV.setText(releaseDate.substring(0, 4));
 
         Picasso.with(this).load(posterPath).into(thumbnailIV);
+
+        Picasso.with(this).load(backdropPath).into((ImageView) findViewById(R.id.image_backdrop_background));
     }
 }
