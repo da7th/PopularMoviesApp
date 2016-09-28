@@ -1,6 +1,7 @@
 package com.example.android.popularmoviesapp;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by da7th on 23/09/2016.
@@ -8,8 +9,19 @@ import android.os.Parcel;
 
 //this here will be the a new object that stores each movie's relevant information with regards to
 // the app so as to easily use it later
-public class Movie {
+public class Movie implements Parcelable {
 
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
     //the following are the paramters taken from the API for each entry and used in the app
     private String mPosterPath;
     private Boolean mAdult;
@@ -60,7 +72,7 @@ public class Movie {
         this.mVoteAverage = in.readDouble();
     }
 
-    void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mPosterPath);
         dest.writeInt(mAdult ? 1 : 0);
         dest.writeString(mOverview);
@@ -76,9 +88,10 @@ public class Movie {
         dest.writeDouble(mVoteAverage);
     }
 
-    int describeContents() {
+    public int describeContents() {
         return 0;
     }
+
 
     //the following are the public get methods to call parameters from the movie object as needed
     public String getPosterPath() {

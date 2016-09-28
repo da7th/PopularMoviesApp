@@ -26,21 +26,21 @@ public class DetailsFragment extends AppCompatActivity {
         setContentView(R.layout.fragment_movies_details);
 
         Intent receivedIntent = getIntent();
-        Bundle currentMovieBundle = receivedIntent.getExtras();
+        Movie currentMovieBundle = receivedIntent.getParcelableExtra("movie");
 
-        String posterPath = currentMovieBundle.getString("posterPath");
-        Boolean adult = currentMovieBundle.getBoolean("adult");
-        String overview = currentMovieBundle.getString("overview");
-        String releaseDate = currentMovieBundle.getString("releaseDate");
-        int id = currentMovieBundle.getInt("id");
-        String originalTitle = currentMovieBundle.getString("originalTitle");
-        String originalLanguage = currentMovieBundle.getString("originalLanguage");
-        String title = currentMovieBundle.getString("title");
-        String backdropPath = currentMovieBundle.getString("backdropPath");
-        long popularity = currentMovieBundle.getLong("popularity");
-        int voteCount = currentMovieBundle.getInt("voteCount");
-        Boolean video = currentMovieBundle.getBoolean("video");
-        double voteAverage = currentMovieBundle.getDouble("voteAverage");
+        String posterPath = currentMovieBundle.getPosterPath();
+        Boolean adult = currentMovieBundle.getAdult();
+        String overview = currentMovieBundle.getOverview();
+        String releaseDate = currentMovieBundle.getReleaseDate();
+        int id = currentMovieBundle.getID();
+        String originalTitle = currentMovieBundle.getOriginalTitle();
+        String originalLanguage = currentMovieBundle.getOriginalLanguage();
+        String title = currentMovieBundle.getTitle();
+        String backdropPath = currentMovieBundle.getBackdropPath();
+        long popularity = currentMovieBundle.getPopularity();
+        int voteCount = currentMovieBundle.getVoteCount();
+        Boolean video = currentMovieBundle.getVideo();
+        double voteAverage = currentMovieBundle.getVoteAverage();
 
         final TextView titleTV = (TextView) findViewById(R.id.fragment_movies_details_title);
         TextView overviewTV = (TextView) findViewById(R.id.fragment_movies_details_overview);

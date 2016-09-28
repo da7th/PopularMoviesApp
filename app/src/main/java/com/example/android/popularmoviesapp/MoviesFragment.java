@@ -66,36 +66,37 @@ public class MoviesFragment extends Fragment {
 
                 Movie currentMovie = mMovieAdapter.getItem(position);
 
-                String posterPath = currentMovie.getPosterPath();
-                Boolean adult = currentMovie.getAdult();
-                String overview = currentMovie.getOverview();
-                String releaseDate = currentMovie.getReleaseDate();
-                int _id = currentMovie.getID();
-                String originalTitle = currentMovie.getOriginalTitle();
-                String originalLanguage = currentMovie.getOriginalLanguage();
-                String title = currentMovie.getTitle();
-                String backdropPath = currentMovie.getBackdropPath();
-                long popularity = currentMovie.getPopularity();
-                int voteCount = currentMovie.getVoteCount();
-                Boolean video = currentMovie.getVideo();
-                double voteAverage = currentMovie.getVoteAverage();
+//                String posterPath = currentMovie.getPosterPath();
+//                Boolean adult = currentMovie.getAdult();
+//                String overview = currentMovie.getOverview();
+//                String releaseDate = currentMovie.getReleaseDate();
+//                int _id = currentMovie.getID();
+//                String originalTitle = currentMovie.getOriginalTitle();
+//                String originalLanguage = currentMovie.getOriginalLanguage();
+//                String title = currentMovie.getTitle();
+//                String backdropPath = currentMovie.getBackdropPath();
+//                long popularity = currentMovie.getPopularity();
+//                int voteCount = currentMovie.getVoteCount();
+//                Boolean video = currentMovie.getVideo();
+//                double voteAverage = currentMovie.getVoteAverage();
+//
+//                Bundle currentMovieBundle = new Bundle();
+//                currentMovieBundle.putString("posterPath", posterPath);
+//                currentMovieBundle.putBoolean("adult", adult);
+//                currentMovieBundle.putString("overview", overview);
+//                currentMovieBundle.putString("releaseDate", releaseDate);
+//                currentMovieBundle.putInt("id", _id);
+//                currentMovieBundle.putString("originalTitle", originalTitle);
+//                currentMovieBundle.putString("originalLanguage", originalLanguage);
+//                currentMovieBundle.putString("title", title);
+//                currentMovieBundle.putString("backdropPath", backdropPath);
+//                currentMovieBundle.putLong("popularity", popularity);
+//                currentMovieBundle.putInt("voteCount", voteCount);
+//                currentMovieBundle.putBoolean("video", video);
+//                currentMovieBundle.putDouble("voteAverage", voteAverage);
 
-                Bundle currentMovieBundle = new Bundle();
-                currentMovieBundle.putString("posterPath", posterPath);
-                currentMovieBundle.putBoolean("adult", adult);
-                currentMovieBundle.putString("overview", overview);
-                currentMovieBundle.putString("releaseDate", releaseDate);
-                currentMovieBundle.putInt("id", _id);
-                currentMovieBundle.putString("originalTitle", originalTitle);
-                currentMovieBundle.putString("originalLanguage", originalLanguage);
-                currentMovieBundle.putString("title", title);
-                currentMovieBundle.putString("backdropPath", backdropPath);
-                currentMovieBundle.putLong("popularity", popularity);
-                currentMovieBundle.putInt("voteCount", voteCount);
-                currentMovieBundle.putBoolean("video", video);
-                currentMovieBundle.putDouble("voteAverage", voteAverage);
 
-                startActivity(new Intent(getActivity(), DetailsFragment.class).putExtras(currentMovieBundle));
+                startActivity(new Intent(getActivity(), DetailsFragment.class).putExtra("movie", currentMovie));
 
             }
         });
@@ -118,6 +119,12 @@ public class MoviesFragment extends Fragment {
         String sortOption = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.sort_options_value_popular));
 
         fetchMovies.execute(sortOption);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mMovieAdapter.clear();
     }
 
     public class fetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
