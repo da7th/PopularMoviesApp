@@ -16,7 +16,7 @@ import com.squareup.picasso.Picasso;
  * Created by da7th on 25/09/2016.
  */
 
-public class DetailsFragment extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override

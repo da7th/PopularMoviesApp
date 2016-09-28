@@ -19,7 +19,7 @@
         </activity>
 
         <activity
-            android:name=".DetailsFragment"
+            android:name=".DetailsActivity"
             android:immersive="true"
             android:label="Movie Details"
             android:parentActivityName=".MainActivity">

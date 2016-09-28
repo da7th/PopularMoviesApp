@@ -96,7 +96,7 @@ public class MoviesFragment extends Fragment {
 //                currentMovieBundle.putDouble("voteAverage", voteAverage);
 
 
-                startActivity(new Intent(getActivity(), DetailsFragment.class).putExtra("movie", currentMovie));
+                startActivity(new Intent(getActivity(), DetailsActivity.class).putExtra("movie", currentMovie));
 
             }
         });
