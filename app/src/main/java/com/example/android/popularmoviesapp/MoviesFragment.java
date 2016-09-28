@@ -275,9 +275,7 @@ public class MoviesFragment extends Fragment {
                         overview + "\n" + releaseDate + "\n" + id + "\n" + originalTitle + "\n" +
                         originalLanguage + "\n" + title + "\n" + backdropPath + "\n" + popularity +
                         "\n" + voteCount + "\n" + video + "\n" + voteAverage);
-
             }
-
             return movies;
         }
 
@@ -295,6 +293,4 @@ public class MoviesFragment extends Fragment {
             }
         }
     }
-
-
 }

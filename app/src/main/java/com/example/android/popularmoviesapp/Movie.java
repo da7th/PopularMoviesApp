@@ -1,5 +1,7 @@
 package com.example.android.popularmoviesapp;
 
+import android.os.Parcel;
+
 /**
  * Created by da7th on 23/09/2016.
  */
@@ -40,6 +42,42 @@ public class Movie {
         mVoteCount = voteCount;
         mVideo = video;
         mVoteAverage = voteAverage;
+    }
+
+    public Movie(Parcel in) {
+        this.mPosterPath = in.readString();
+        this.mAdult = (in.readInt() == 1);
+        this.mOverview = in.readString();
+        this.mReleaseDate = in.readString();
+        this.mId = in.readInt();
+        this.mOriginalTitle = in.readString();
+        this.mOriginalLanguage = in.readString();
+        this.mTitle = in.readString();
+        this.mBackdropPath = in.readString();
+        this.mPopularity = in.readLong();
+        this.mVoteCount = in.readInt();
+        this.mVideo = (in.readInt() == 1);
+        this.mVoteAverage = in.readDouble();
+    }
+
+    void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mPosterPath);
+        dest.writeInt(mAdult ? 1 : 0);
+        dest.writeString(mOverview);
+        dest.writeString(mReleaseDate);
+        dest.writeInt(mId);
+        dest.writeString(mOriginalTitle);
+        dest.writeString(mOriginalLanguage);
+        dest.writeString(mTitle);
+        dest.writeString(mBackdropPath);
+        dest.writeLong(mPopularity);
+        dest.writeInt(mVoteCount);
+        dest.writeInt(mVideo ? 1 : 0);
+        dest.writeDouble(mVoteAverage);
+    }
+
+    int describeContents() {
+        return 0;
     }
 
     //the following are the public get methods to call parameters from the movie object as needed
