@@ -66,36 +66,6 @@ public class MoviesFragment extends Fragment {
 
                 Movie currentMovie = mMovieAdapter.getItem(position);
 
-//                String posterPath = currentMovie.getPosterPath();
-//                Boolean adult = currentMovie.getAdult();
-//                String overview = currentMovie.getOverview();
-//                String releaseDate = currentMovie.getReleaseDate();
-//                int _id = currentMovie.getID();
-//                String originalTitle = currentMovie.getOriginalTitle();
-//                String originalLanguage = currentMovie.getOriginalLanguage();
-//                String title = currentMovie.getTitle();
-//                String backdropPath = currentMovie.getBackdropPath();
-//                long popularity = currentMovie.getPopularity();
-//                int voteCount = currentMovie.getVoteCount();
-//                Boolean video = currentMovie.getVideo();
-//                double voteAverage = currentMovie.getVoteAverage();
-//
-//                Bundle currentMovieBundle = new Bundle();
-//                currentMovieBundle.putString("posterPath", posterPath);
-//                currentMovieBundle.putBoolean("adult", adult);
-//                currentMovieBundle.putString("overview", overview);
-//                currentMovieBundle.putString("releaseDate", releaseDate);
-//                currentMovieBundle.putInt("id", _id);
-//                currentMovieBundle.putString("originalTitle", originalTitle);
-//                currentMovieBundle.putString("originalLanguage", originalLanguage);
-//                currentMovieBundle.putString("title", title);
-//                currentMovieBundle.putString("backdropPath", backdropPath);
-//                currentMovieBundle.putLong("popularity", popularity);
-//                currentMovieBundle.putInt("voteCount", voteCount);
-//                currentMovieBundle.putBoolean("video", video);
-//                currentMovieBundle.putDouble("voteAverage", voteAverage);
-
-
                 startActivity(new Intent(getActivity(), DetailsActivity.class).putExtra("movie", currentMovie));
 
             }

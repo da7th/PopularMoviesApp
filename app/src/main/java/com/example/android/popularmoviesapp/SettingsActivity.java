@@ -1,17 +1,21 @@
 package com.example.android.popularmoviesapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 
 /**
  * Created by da7th on 25/09/2016.
  */
 
-public class SettingsActivity extends PreferenceActivity
+public class SettingsActivity extends AppCompatPreferenceActivity
         implements Preference.OnPreferenceChangeListener {
+
+    int i = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,12 +37,15 @@ public class SettingsActivity extends PreferenceActivity
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(this);
 
+
         // Trigger the listener immediately with the preference's
         // current value.
         onPreferenceChange(preference,
                 PreferenceManager
                         .getDefaultSharedPreferences(preference.getContext())
                         .getString(preference.getKey(), ""));
+
+
     }
 
     @Override
@@ -52,12 +59,34 @@ public class SettingsActivity extends PreferenceActivity
             int prefIndex = listPreference.findIndexOfValue(stringValue);
             if (prefIndex >= 0) {
                 preference.setSummary(listPreference.getEntries()[prefIndex]);
+
             }
+
         } else {
             // For other preferences, set the summary to the value's simple string representation.
             preference.setSummary(stringValue);
+
+        }
+
+        i++;
+        if (i == 2) {
+            startActivity(new Intent(this, MainActivity.class));
         }
         return true;
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            if (!super.onOptionsItemSelected(item)) {
+                NavUtils.navigateUpFromSameTask(this);
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }
