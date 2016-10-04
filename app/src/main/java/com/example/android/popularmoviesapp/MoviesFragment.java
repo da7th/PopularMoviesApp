@@ -61,7 +61,10 @@ public class MoviesFragment extends Fragment {
 
         GridView gridView = (GridView) rootView.findViewById(R.id.movie_grid);
 
+        View gridEmptyView = rootView.findViewById(R.id.grid_empty_view);
+
         gridView.setAdapter(mMovieAdapter);
+        gridView.setEmptyView(gridEmptyView);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

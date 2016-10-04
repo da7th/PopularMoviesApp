@@ -9,11 +9,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center|fill"
+        android:hapticFeedbackEnabled="true"
         android:horizontalSpacing="0dp"
         android:numColumns="auto_fit"
-        android:hapticFeedbackEnabled="true"
         android:stretchMode="columnWidth"
         android:verticalSpacing="0dp">
 
     </GridView>
+
+    <TextView
+        android:id="@+id/grid_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="Awww man!\nNothing to show at the moment...\n\n If this screen persists please check your Internet Connection"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 </LinearLayout>
