@@ -15,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.example.android.popularmoviesapp.data.Movie;
+import com.example.android.popularmoviesapp.data.MovieAdapter;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -242,15 +245,15 @@ public class MoviesFragment extends Fragment {
                 video = movieObject.getBoolean(MDB_VIDEO);
                 voteAverage = movieObject.getDouble(MDB_VOTE_AVERAGE);
 
-                posterPath = "http://image.tmdb.org/t/p/w342" + posterPath;
-                backdropPath = "http://image.tmdb.org/t/p/original" + backdropPath;
+                posterPath = "http://image.tmdb.org/t/p/" + getResources().getString(R.string.poster_quality) + posterPath;
+                backdropPath = "http://image.tmdb.org/t/p/" + getResources().getString(R.string.backdrop_quality) + backdropPath;
 
                 movies[i] = new Movie(posterPath, adult, overview, releaseDate, id, originalTitle,
                         originalLanguage, title, backdropPath, popularity, voteCount, video, voteAverage);
 
-                Log.d(MoviesFragment.class.getSimpleName(), posterPath + "\n" + adult + "\n" +
+                Log.d(MoviesFragment.class.getSimpleName(), posterPath + "\n" + getResources().getString(R.string.poster_quality) + "\n" + adult + "\n" +
                         overview + "\n" + releaseDate + "\n" + id + "\n" + originalTitle + "\n" +
-                        originalLanguage + "\n" + title + "\n" + backdropPath + "\n" + popularity +
+                        originalLanguage + "\n" + title + "\n" + backdropPath + "\n" + getResources().getString(R.string.backdrop_quality) + "\n" + popularity +
                         "\n" + voteCount + "\n" + video + "\n" + voteAverage);
             }
             return movies;

@@ -21,4 +21,7 @@
     <string name="action_sort">Sort Movies</string>
 
     <string name="settings_label">Settings</string>
+
+    <string name="poster_quality">w342</string>
+    <string name="backdrop_quality">w500</string>
 </resources>

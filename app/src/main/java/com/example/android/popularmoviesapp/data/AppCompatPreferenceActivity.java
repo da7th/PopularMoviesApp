@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesapp;
+package com.example.android.popularmoviesapp.data;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

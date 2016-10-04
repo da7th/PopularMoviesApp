@@ -8,6 +8,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
+import com.example.android.popularmoviesapp.data.AppCompatPreferenceActivity;
+
 /**
  * Created by da7th on 25/09/2016.
  */

@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.popularmoviesapp.data.Movie;
 import com.squareup.picasso.Picasso;
 
 /**
