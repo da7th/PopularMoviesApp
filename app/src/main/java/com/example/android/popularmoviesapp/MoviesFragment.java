@@ -1,10 +1,13 @@
 package com.example.android.popularmoviesapp;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.example.android.popularmoviesapp.data.Movie;
 import com.example.android.popularmoviesapp.data.MovieAdapter;
@@ -91,8 +95,15 @@ public class MoviesFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        ConnectivityManager connMg = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMg.getActiveNetworkInfo();
 
+        if (networkInfo != null && networkInfo.isConnected()) {
         populateGrid();
+        } else {
+            Log.v("ERROR", "Trying to stop it here");
+            Toast.makeText(getContext(), "Unable to establish connection error.", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void populateGrid() {
@@ -101,7 +112,9 @@ public class MoviesFragment extends Fragment {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortOption = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.sort_options_value_popular));
 
+
         fetchMovies.execute(sortOption);
+
     }
 
     @Override
@@ -141,6 +154,8 @@ public class MoviesFragment extends Fragment {
                         .build();
 
                 URL url = new URL(uri.toString());
+
+                Log.v(LOG_TAG, url.toString());
 
                 urlConnection = (HttpsURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");

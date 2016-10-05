@@ -25,5 +25,5 @@
     <string name="poster_quality">w342</string>
     <string name="backdrop_quality">w500</string>
 
-    <string name="empty_view_message">Awww man!\nNothing to show at the moment&#8230;\n\n If this screen persists please check your Internet Connection</string>
+    <string name="empty_view_message">Awww man!\nLoading&#8230;</string>
 </resources>

@@ -34,8 +34,8 @@
                 android:paddingTop="50dp"
                 android:shadowColor="@android:color/black"
                 android:shadowRadius="20"
-                android:textColor="@android:color/white"
-                android:textSize="45sp"
+                android:textColor="@android:color/holo_orange_light"
+                android:textSize="40sp"
                 tools:text="Movie Title" />
 
         </RelativeLayout>
