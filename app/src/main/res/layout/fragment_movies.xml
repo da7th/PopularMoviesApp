@@ -22,6 +22,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="Awww man!\nNothing to show at the moment...\n\n If this screen persists please check your Internet Connection"
+        android:text="@string/empty_view_message"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 </LinearLayout>
