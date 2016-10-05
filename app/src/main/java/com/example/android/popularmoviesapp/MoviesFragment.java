@@ -1,7 +1,10 @@
 package com.example.android.popularmoviesapp;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +20,8 @@ import android.widget.GridView;
 
 import com.example.android.popularmoviesapp.data.Movie;
 import com.example.android.popularmoviesapp.data.MovieAdapter;
+import com.example.android.popularmoviesapp.data.MovieContract;
+import com.example.android.popularmoviesapp.data.MovieDbHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +43,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class MoviesFragment extends Fragment {
 
+    private SQLiteOpenHelper mDbHelper;
     private MovieAdapter mMovieAdapter;
 
     public MoviesFragment(){
@@ -47,6 +53,7 @@ public class MoviesFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mDbHelper = new MovieDbHelper(getContext());
         setHasOptionsMenu(true);
     }
 
@@ -254,6 +261,26 @@ public class MoviesFragment extends Fragment {
                 movies[i] = new Movie(posterPath, adult, overview, releaseDate, id, originalTitle,
                         originalLanguage, title, backdropPath, popularity, voteCount, video, voteAverage);
 
+
+                SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+                ContentValues values = new ContentValues();
+                values.put(MovieContract.MoviesSaved.COLUMN_POSTER_PATH, posterPath);
+                values.put(MovieContract.MoviesSaved.COLUMN_ADULT, adult);
+                values.put(MovieContract.MoviesSaved.COLUMN_OVERVIEW, overview);
+                values.put(MovieContract.MoviesSaved.COLUMN_RELEASE_DATE, releaseDate);
+                values.put(MovieContract.MoviesSaved.COLUMN_MOVIE_ID, id);
+                values.put(MovieContract.MoviesSaved.COLUMN_ORIGINAL_TITLE, originalTitle);
+                values.put(MovieContract.MoviesSaved.COLUMN_ORIGINAL_LANGUAGE, originalLanguage);
+                values.put(MovieContract.MoviesSaved.COLUMN_TITLE, title);
+                values.put(MovieContract.MoviesSaved.COLUMN_BACKDROP_PATH, backdropPath);
+                values.put(MovieContract.MoviesSaved.COLUMN_POPULARITY, popularity);
+                values.put(MovieContract.MoviesSaved.COLUMN_VOTE_COUNT, voteCount);
+                values.put(MovieContract.MoviesSaved.COLUMN_VIDEO, video);
+                values.put(MovieContract.MoviesSaved.COLUMN_VOTE_AVERAGE, voteAverage);
+
+                database.insert(MovieContract.MoviesSaved.TABLE_NAME, null, values);
+
                 Log.d(MoviesFragment.class.getSimpleName(), posterPath + "\n" + getResources().getString(R.string.poster_quality) + "\n" + adult + "\n" +
                         overview + "\n" + releaseDate + "\n" + id + "\n" + originalTitle + "\n" +
                         originalLanguage + "\n" + title + "\n" + backdropPath + "\n" + getResources().getString(R.string.backdrop_quality) + "\n" + popularity +
@@ -261,6 +288,7 @@ public class MoviesFragment extends Fragment {
             }
             return movies;
         }
+
 
         @Override
         protected void onPostExecute(Movie[] movies) {
