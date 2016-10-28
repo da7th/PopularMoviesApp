@@ -16,6 +16,10 @@ public final class MovieContract {
     private MovieContract() {
     }
 
+    public Uri BasicUri() {
+        return BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES).build();
+    }
+
     public static final class MoviesSaved implements BaseColumns {
 
         public static final String TABLE_NAME = "recent_movies";
@@ -36,5 +40,7 @@ public final class MovieContract {
         public static final String COLUMN_VIDEO = "video";
         public static final String COLUMN_VOTE_AVERAGE = "vote_average";
 
+
     }
+
 }

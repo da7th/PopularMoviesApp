@@ -19,10 +19,19 @@
             </intent-filter>
         </activity>
 
+        <!--<activity-->
+        <!--android:name=".DetailsFragment"-->
+        <!--android:immersive="true"-->
+        <!--android:label="Movie Details"-->
+        <!--android:parentActivityName=".MainActivity">-->
+        <!--<meta-data-->
+        <!--android:name="android.support.PARENT_ACTIVITY"-->
+        <!--android:value=".MainActivity" />-->
+        <!--</activity>-->
+
         <activity
-            android:name=".DetailsActivity"
-            android:immersive="true"
-            android:label="Movie Details"
+            android:name=".SettingsActivity"
+            android:label="Settings"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -30,9 +39,10 @@
         </activity>
 
         <activity
-            android:name=".SettingsActivity"
-            android:label="Settings"
+            android:name=".DetailsActivity"
+            android:label="Movie Details"
             android:parentActivityName=".MainActivity">
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />

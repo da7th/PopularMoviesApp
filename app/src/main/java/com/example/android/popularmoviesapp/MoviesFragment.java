@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
@@ -14,6 +15,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +26,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.example.android.popularmoviesapp.data.Movie;
-import com.example.android.popularmoviesapp.data.MovieAdapter;
+import com.example.android.popularmoviesapp.data.GridCursorAdapter;
 import com.example.android.popularmoviesapp.data.MovieContract;
 import com.example.android.popularmoviesapp.data.MovieDbHelper;
 
@@ -36,7 +39,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -45,12 +47,20 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by da7th on 23/09/2016.
  */
 
-public class MoviesFragment extends Fragment {
+public class MoviesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final int MOVIE_LOADER = 0;
+    public static int mPosition;
+    boolean mTwoPane;
     private SQLiteOpenHelper mDbHelper;
-    private MovieAdapter mMovieAdapter;
+    private GridCursorAdapter mMovieAdapter;
+
 
     public MoviesFragment(){
+    }
+
+    public static int getPosition() {
+        return mPosition;
     }
 
     @Override
@@ -59,6 +69,10 @@ public class MoviesFragment extends Fragment {
 
         mDbHelper = new MovieDbHelper(getContext());
         setHasOptionsMenu(true);
+        mPosition = 0;
+
+        Intent intent = getActivity().getIntent();
+        mTwoPane = intent.getBooleanExtra("mTwoPane", false);
     }
 
     @Nullable
@@ -66,7 +80,7 @@ public class MoviesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
-        mMovieAdapter = new MovieAdapter(getContext(), new ArrayList<Movie>());
+        mMovieAdapter = new GridCursorAdapter(getContext(), null);
 
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
 
@@ -79,17 +93,23 @@ public class MoviesFragment extends Fragment {
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Movie currentMovie = mMovieAdapter.getItem(position);
-
-                startActivity(new Intent(getActivity(), DetailsActivity.class).putExtra("movie", currentMovie));
-
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+                if (cursor != null) {
+                    if (mTwoPane == false) {
+                    }
+                }
             }
         });
 
         return rootView;
 
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -112,7 +132,6 @@ public class MoviesFragment extends Fragment {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortOption = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.sort_options_value_popular));
 
-
         fetchMovies.execute(sortOption);
 
     }
@@ -120,19 +139,40 @@ public class MoviesFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        mMovieAdapter.clear();
     }
 
-    public class fetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        String sortOrder = MovieContract.MoviesSaved._ID + " ASC";
+        return new CursorLoader(getActivity(),
+                MovieContract.BASE_CONTENT_URI.buildUpon().
+                        appendPath(MovieContract.PATH_MOVIES).build(),
+                null,
+                null,
+                null,
+                sortOrder);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        mMovieAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mMovieAdapter.swapCursor(null);
+    }
+
+    public class fetchMoviesTask extends AsyncTask<String, Void, Void> {
 
         final private String LOG_TAG = fetchMoviesTask.class.getSimpleName();
 
         @Override
-        protected Movie[] doInBackground(String... params) {
+        protected Void doInBackground(String... params) {
 
             if (params.length == 0) {
 
-                return null;
             }
 
 
@@ -204,7 +244,7 @@ public class MoviesFragment extends Fragment {
             }
 
             try {
-                return getMovieDataFromJson(movieJsonStr);
+                getMovieDataFromJson(movieJsonStr);
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
@@ -214,7 +254,7 @@ public class MoviesFragment extends Fragment {
         }
 
 
-        private Movie[] getMovieDataFromJson(String movieJsonStr) throws JSONException {
+        private void getMovieDataFromJson(String movieJsonStr) throws JSONException {
 
             final String MDB_POSTER_PATH = "poster_path";
             final String MDB_ADULT = "adult";
@@ -250,7 +290,9 @@ public class MoviesFragment extends Fragment {
 
             JSONArray resultsArray = rootObject.getJSONArray(MDB_RESULTS);
 
-            Movie[] movies = new Movie[resultsArray.length()];
+            SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+            database.delete(MovieContract.MoviesSaved.TABLE_NAME, null, null);
 
             for (int i = 0; i < resultsArray.length(); i++) {
 
@@ -272,12 +314,6 @@ public class MoviesFragment extends Fragment {
 
                 posterPath = "http://image.tmdb.org/t/p/" + getResources().getString(R.string.poster_quality) + posterPath;
                 backdropPath = "http://image.tmdb.org/t/p/" + getResources().getString(R.string.backdrop_quality) + backdropPath;
-
-                movies[i] = new Movie(posterPath, adult, overview, releaseDate, id, originalTitle,
-                        originalLanguage, title, backdropPath, popularity, voteCount, video, voteAverage);
-
-
-                SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
                 ContentValues values = new ContentValues();
                 values.put(MovieContract.MoviesSaved.COLUMN_POSTER_PATH, posterPath);
@@ -301,22 +337,7 @@ public class MoviesFragment extends Fragment {
                         originalLanguage + "\n" + title + "\n" + backdropPath + "\n" + getResources().getString(R.string.backdrop_quality) + "\n" + popularity +
                         "\n" + voteCount + "\n" + video + "\n" + voteAverage);
             }
-            return movies;
         }
 
-
-        @Override
-        protected void onPostExecute(Movie[] movies) {
-
-            if (movies != null) {
-
-                mMovieAdapter.clear();
-
-                for (Movie movie : movies) {
-
-                    mMovieAdapter.add(movie);
-                }
-            }
-        }
     }
 }
