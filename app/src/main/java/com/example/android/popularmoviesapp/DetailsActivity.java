@@ -15,8 +15,17 @@ public class DetailsActivity extends AppCompatActivity {
         //check if there is data already loaded in the view and if so load it again, otherwise add
         // a new detailsFragment
         if (savedInstanceState == null) {
+            // Create the detail fragment and add it to the activity
+            // using a fragment transaction.
+
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(DetailsFragment.DETAIL_URI, getIntent().getData());
+
+            DetailsFragment fragment = new DetailsFragment();
+            fragment.setArguments(arguments);
+
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.details_layout, new DetailsFragment())
+                    .add(R.id.details_layout, fragment)
                     .commit();
         }
     }

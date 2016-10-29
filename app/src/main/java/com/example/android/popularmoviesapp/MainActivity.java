@@ -1,15 +1,15 @@
 package com.example.android.popularmoviesapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.idescout.sql.SqlScoutServer;
+public class MainActivity extends AppCompatActivity implements MoviesFragment.Callback {
 
-public class MainActivity extends AppCompatActivity {
-
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
     public boolean mTwoPane;
 
     @Override
@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //this will show me the database.
-        SqlScoutServer.create(this, getPackageName());
+        //SqlScoutServer.create(this, getPackageName());
 
         //check if the details layout is in the loaded view to see if its a phone or tablet device.
         if (findViewById(R.id.details_layout) != null) {
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
             //check if the fragment is already loaded or not, if it isn't the load a new one.
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.details_layout, new DetailsFragment())
+                        .replace(R.id.details_layout, new DetailsFragment(), DETAILFRAGMENT_TAG)
                         .commit();
             }
         } else {
@@ -60,5 +60,28 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onItemSelected(Uri contentUri) {
+        if (mTwoPane) {
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            Bundle args = new Bundle();
+            args.putParcelable(DetailsFragment.DETAIL_URI, contentUri);
+
+            DetailsFragment fragment = new DetailsFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.details_layout, fragment, DETAILFRAGMENT_TAG)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, DetailsActivity.class)
+                    .setData(contentUri);
+            startActivity(intent);
+        }
     }
 }

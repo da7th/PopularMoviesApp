@@ -80,9 +80,8 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-                if (cursor != null) {
-
-                }
+                if (cursor != null) ((Callback) getActivity())
+                        .onItemSelected(MovieContract.MoviesSaved.CONTENT_URI);
             }
         });
 
@@ -166,6 +165,13 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
         //when the loader resets, swap the cursor with null
         mMovieAdapter.swapCursor(null);
+    }
+
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        void onItemSelected(Uri dateUri);
     }
 
     //background task thread for fetching the data from online and storing it to the database for
