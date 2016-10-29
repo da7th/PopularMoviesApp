@@ -2,11 +2,8 @@ package com.example.android.popularmoviesapp;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -28,7 +25,6 @@ import android.widget.Toast;
 
 import com.example.android.popularmoviesapp.data.GridCursorAdapter;
 import com.example.android.popularmoviesapp.data.MovieContract;
-import com.example.android.popularmoviesapp.data.MovieDbHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,71 +39,62 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 
-/**
- * Created by da7th on 23/09/2016.
- */
-
 public class MoviesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int MOVIE_LOADER = 0;
-    public static int mPosition;
-    boolean mTwoPane;
-    private SQLiteOpenHelper mDbHelper;
     private GridCursorAdapter mMovieAdapter;
 
-
+    //default constructor for the class
     public MoviesFragment(){
     }
 
-    public static int getPosition() {
-        return mPosition;
-    }
-
+    //first method to be called upon launch
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mDbHelper = new MovieDbHelper(getContext());
+        //this activity has an options menu
         setHasOptionsMenu(true);
-        mPosition = 0;
-
-        Intent intent = getActivity().getIntent();
-        mTwoPane = intent.getBooleanExtra("mTwoPane", false);
     }
 
+    //the method for actually creating the fragment view.
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-
+        //initialise the cursor adapter with context and null cursor
         mMovieAdapter = new GridCursorAdapter(getContext(), null);
 
+        //define the rootView, gridView, gridView empty
+        //and also set the Movie cursor adapter to the gridView as well as the emptyView for the
+        //grid
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
-
         GridView gridView = (GridView) rootView.findViewById(R.id.movie_grid);
-
         View gridEmptyView = rootView.findViewById(R.id.grid_empty_view);
-
         gridView.setAdapter(mMovieAdapter);
         gridView.setEmptyView(gridEmptyView);
 
+        //set the onItemClickListener for the gridView
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
-                    if (mTwoPane == false) {
-                    }
+
                 }
             }
         });
 
         return rootView;
-
     }
 
+    //
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+
+        // Prepare the loader. Either re-connect with an existing one,
+        // or start a new one.
         getLoaderManager().initLoader(MOVIE_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
@@ -115,25 +102,35 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onStart() {
         super.onStart();
+
+        //obtain an instance of the connectivityManager for the connectivity_service,
+        //obtain an instance of networkInfo to get the active network information
+        //check if the network is both connected and not null,
+        //if so make a call to populate the gridView.
+        //else show the user a toast to check their network connection
         ConnectivityManager connMg = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMg.getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.isConnected()) {
+
         populateGrid();
         } else {
-            Log.v("ERROR", "Trying to stop it here");
+
             Toast.makeText(getContext(), "Unable to establish connection error.", Toast.LENGTH_LONG).show();
         }
     }
 
+    //method to start the grid population
     public void populateGrid() {
-        fetchMoviesTask fetchMovies = new fetchMoviesTask();
 
+        //create an instance of the fetchMovies task
+        //check the shared preferences for the sorting preference and add that to the call before execution.
+        fetchMoviesTask fetchMovies = new fetchMoviesTask();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortOption = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.sort_options_value_popular));
 
+        //execute the fetchMovies task with the sorting option attached
         fetchMovies.execute(sortOption);
-
     }
 
     @Override
@@ -144,10 +141,13 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
+        //the sorting order for the loaded items
+        //in ascending order of the item's _id
         String sortOrder = MovieContract.MoviesSaved._ID + " ASC";
+
+        //define the new cursor loader.
         return new CursorLoader(getActivity(),
-                MovieContract.BASE_CONTENT_URI.buildUpon().
-                        appendPath(MovieContract.PATH_MOVIES).build(),
+                MovieContract.MoviesSaved.CONTENT_URI,
                 null,
                 null,
                 null,
@@ -156,66 +156,73 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+        //swap the cursor in the cursorAdapter with the one passed on to this method
         mMovieAdapter.swapCursor(cursor);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+
+        //when the loader resets, swap the cursor with null
         mMovieAdapter.swapCursor(null);
     }
 
+    //background task thread for fetching the data from online and storing it to the database for
+    //use in the app
     public class fetchMoviesTask extends AsyncTask<String, Void, Void> {
 
         final private String LOG_TAG = fetchMoviesTask.class.getSimpleName();
 
+        //the specific background execution method with the input being the String for the sort
+        // type to get the data from
         @Override
         protected Void doInBackground(String... params) {
 
-            if (params.length == 0) {
-
-            }
-
-
+            //initialise the connection parameters
             HttpsURLConnection urlConnection = null;
             BufferedReader reader = null;
             String movieJsonStr = "";
 
-
+            //enclose in a try/catch due to multiple errors that can occur during the connection
+            // and data retrieval processes
             try {
 
+                //url building parameters
                 final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie";
                 final String ORDER_MODE = params[0];
                 final String API_KEY = "api_key";
 
-
-                Uri uri = Uri.parse(MOVIE_BASE_URL).buildUpon()
+                //building the uri and creating the full url
+                Uri movieDBUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
                         .appendPath(ORDER_MODE)
                         .appendQueryParameter(API_KEY, BuildConfig.MOVIES_DB_API_KEY)
                         .build();
+                URL movieDBUrl = new URL(movieDBUri.toString());
 
-                URL url = new URL(uri.toString());
-
-                Log.v(LOG_TAG, url.toString());
-
-                urlConnection = (HttpsURLConnection) url.openConnection();
+                //performing the connection to the url
+                urlConnection = (HttpsURLConnection) movieDBUrl.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
 
+                //initialise buffer, grab inputStream, and check the inputstream contents
                 InputStream inputStream = urlConnection.getInputStream();
-
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
 
                 if (inputStream == null) {
 
                     return null;
                 }
 
+                //set the contents of the bufferReader to the result of setting a new
+                // inputStreamReader on the inputStream, initialise a String variable line to store
+                // the String result line by line into the buffer, and finally check the whether or
+                // not the buffer is empty
                 reader = new BufferedReader(new InputStreamReader(inputStream));
-
                 String line;
                 while ((line = reader.readLine()) != null) {
 
-                    buffer.append(line + "\n");
+                    buffer.append(line).append("\n");
                 }
 
                 if (buffer.length() == 0) {
@@ -223,18 +230,23 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                     return null;
                 }
 
+                //convert the buffer to a string in order to proceed with extracting the data
                 movieJsonStr = buffer.toString();
-
             } catch (IOException e) {
+
+                //error thrown during the connection and assigning the string result processes
                 e.printStackTrace();
             } finally {
                 if (urlConnection != null) {
 
+                    //if the url is not disconnected by this point, disconnect the connection
                     urlConnection.disconnect();
                 }
 
                 if (reader != null) {
 
+                    //if the bufferReader is still open attempt to close it within a try/catch in
+                    // case there are errors
                     try {
                         reader.close();
                     } catch (IOException e) {
@@ -243,19 +255,22 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 }
             }
 
+            //attempt to invoke the getMovieDataFromJson helper method to extract the data from the
+            // json string created above, any errors are caught and printed (stackTrace, Log.e)
             try {
                 getMovieDataFromJson(movieJsonStr);
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
             }
-
             return null;
         }
 
-
+        //method to extract the data from the json string, extract the values for each object and
+        // store them in a database
         private void getMovieDataFromJson(String movieJsonStr) throws JSONException {
 
+            //String variables for all the json items
             final String MDB_POSTER_PATH = "poster_path";
             final String MDB_ADULT = "adult";
             final String MDB_OVERVIEW = "overview";
@@ -286,18 +301,21 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             Boolean video;
             double voteAverage;
 
+            //find the root object and extract the jsonArray
             JSONObject rootObject = new JSONObject(movieJsonStr);
-
             JSONArray resultsArray = rootObject.getJSONArray(MDB_RESULTS);
 
-            SQLiteDatabase database = mDbHelper.getWritableDatabase();
+            //if the connection is successful and a new set of data is acquired delete the old data
+            // from the database
+            int delete = getContext().getContentResolver().delete(MovieContract.MoviesSaved.CONTENT_URI, null, null);
+            Log.v(LOG_TAG, "database items deleted: " + delete);
 
-            database.delete(MovieContract.MoviesSaved.TABLE_NAME, null, null);
-
+            //a loop through all the objects within the jsonArray to be stored into a databse
             for (int i = 0; i < resultsArray.length(); i++) {
 
                 JSONObject movieObject = resultsArray.getJSONObject(i);
 
+                //extract the required information from the jsonObject
                 posterPath = movieObject.getString(MDB_POSTER_PATH);
                 adult = movieObject.getBoolean(MDB_ADULT);
                 overview = movieObject.getString(MDB_OVERVIEW);
@@ -312,9 +330,12 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 video = movieObject.getBoolean(MDB_VIDEO);
                 voteAverage = movieObject.getDouble(MDB_VOTE_AVERAGE);
 
+                //format the full path for the poster and backdrop links
                 posterPath = "http://image.tmdb.org/t/p/" + getResources().getString(R.string.poster_quality) + posterPath;
                 backdropPath = "http://image.tmdb.org/t/p/" + getResources().getString(R.string.backdrop_quality) + backdropPath;
 
+                //create a new ContentValues object and place all the new information into the
+                // object to be stored into the database
                 ContentValues values = new ContentValues();
                 values.put(MovieContract.MoviesSaved.COLUMN_POSTER_PATH, posterPath);
                 values.put(MovieContract.MoviesSaved.COLUMN_ADULT, adult);
@@ -330,14 +351,13 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 values.put(MovieContract.MoviesSaved.COLUMN_VIDEO, video);
                 values.put(MovieContract.MoviesSaved.COLUMN_VOTE_AVERAGE, voteAverage);
 
-                database.insert(MovieContract.MoviesSaved.TABLE_NAME, null, values);
+                //insert the item to the database through the content provider
+                Uri inserted = getContext().getContentResolver().insert(MovieContract.MoviesSaved.CONTENT_URI, values);
+                Log.v(LOG_TAG, "database items inserted: " + inserted);
 
-                Log.d(MoviesFragment.class.getSimpleName(), posterPath + "\n" + getResources().getString(R.string.poster_quality) + "\n" + adult + "\n" +
-                        overview + "\n" + releaseDate + "\n" + id + "\n" + originalTitle + "\n" +
-                        originalLanguage + "\n" + title + "\n" + backdropPath + "\n" + getResources().getString(R.string.backdrop_quality) + "\n" + popularity +
-                        "\n" + voteCount + "\n" + video + "\n" + voteAverage);
+                //just logging the inserted items for debugging purposes
+                Log.d(MoviesFragment.class.getSimpleName(), title);
             }
         }
-
     }
 }

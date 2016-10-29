@@ -24,6 +24,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
+        //SQLite creation of the table with its basic rules
         String SQL_CREATE_MOVIES_TABLE = "CREATE TABLE " + MoviesSaved.TABLE_NAME + " (" +
                 MoviesSaved._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 MoviesSaved.COLUMN_POSTER_PATH + " TEXT NOT NULL, " +

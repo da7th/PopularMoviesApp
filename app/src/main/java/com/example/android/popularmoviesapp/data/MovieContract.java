@@ -1,11 +1,9 @@
 package com.example.android.popularmoviesapp.data;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-/**
- * Created by da7th on 04/10/2016.
- */
 
 public final class MovieContract {
 
@@ -16,11 +14,18 @@ public final class MovieContract {
     private MovieContract() {
     }
 
-    public Uri BasicUri() {
-        return BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES).build();
-    }
-
+    //table for the movies saved upon connection online.
     public static final class MoviesSaved implements BaseColumns {
+
+        //the following two variables are for the content types used in the getType method in the
+        // content provider for getting the type of the uri
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIES;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIES + "/#";
+
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES).build();
 
         public static final String TABLE_NAME = "recent_movies";
 
@@ -39,8 +44,5 @@ public final class MovieContract {
         public static final String COLUMN_VOTE_COUNT = "vote_count";
         public static final String COLUMN_VIDEO = "video";
         public static final String COLUMN_VOTE_AVERAGE = "vote_average";
-
-
     }
-
 }

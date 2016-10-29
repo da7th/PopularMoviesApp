@@ -8,9 +8,10 @@ import android.os.Parcelable;
  */
 
 //this here will be the a new object that stores each movie's relevant information with regards to
-// the app so as to easily use it later
+//the app so as to easily use it later
 public class Movie implements Parcelable {
 
+    //for the parcelable implementation
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
         @Override
         public Movie createFromParcel(Parcel in) {
@@ -22,6 +23,7 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
+
     //the following are the paramters taken from the API for each entry and used in the app
     private String mPosterPath;
     private Boolean mAdult;
@@ -37,6 +39,7 @@ public class Movie implements Parcelable {
     private Boolean mVideo;
     private double mVoteAverage;
 
+    //define the movie object
     public Movie(String posterPath, Boolean adult, String overview, String releaseDate, int id,
                  String originalTitle, String originalLanguage, String title, String backdropPath,
                  long popularity, int voteCount, Boolean video, double voteAverage) {
@@ -56,6 +59,7 @@ public class Movie implements Parcelable {
         mVoteAverage = voteAverage;
     }
 
+    //the movie parcelable object creation
     public Movie(Parcel in) {
         this.mPosterPath = in.readString();
         this.mAdult = (in.readInt() == 1);
@@ -72,6 +76,7 @@ public class Movie implements Parcelable {
         this.mVoteAverage = in.readDouble();
     }
 
+    //the movie parcelable object types and defaults if needed
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mPosterPath);
         dest.writeInt(mAdult ? 1 : 0);
@@ -88,6 +93,7 @@ public class Movie implements Parcelable {
         dest.writeDouble(mVoteAverage);
     }
 
+    //not sure what this is...?
     public int describeContents() {
         return 0;
     }

@@ -10,7 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by da7th on 30/09/2016.
+ this class extends the preference activity, its purpose is to show the action bar in the settings
+ activity
  */
 
 public abstract class AppCompatPreferenceActivity extends PreferenceActivity {

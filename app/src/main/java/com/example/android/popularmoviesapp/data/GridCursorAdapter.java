@@ -2,7 +2,6 @@ package com.example.android.popularmoviesapp.data;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,18 +22,16 @@ public class GridCursorAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        //return and inflate a new grid item to the layout.
         return LayoutInflater.from(context).inflate(R.layout.item_grid, parent, false);
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
+        //get the poster path from the cursor input and use picasso to set it to a grid item.
         ImageView gridItem = (ImageView) view.findViewById(R.id.grid_item);
-
-        Log.v("HELLLOOOOOOOO:", "im here im here im here im here");
         String posterPath = cursor.getString(cursor.getColumnIndex(MovieContract.MoviesSaved.COLUMN_POSTER_PATH));
-
         Picasso.with(context).load(posterPath).into(gridItem);
-
     }
 }
