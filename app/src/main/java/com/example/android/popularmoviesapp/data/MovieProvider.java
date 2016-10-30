@@ -24,17 +24,25 @@ public class MovieProvider extends ContentProvider {
     //variables for each type of uri that might be used by the user to communicate with the provider
     private static final int MOVIES = 100;
     private static final int MOVIE_ID = 101;
+    private MovieDbHelper mDbHelper;
 
     //uri matcher initialised as a NO_MATCH by default
-    private static UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    static UriMatcher sUriMatcher() {
+        // I know what you're thinking.  Why create a UriMatcher when you can use regular
+        // expressions instead?  Because you're not crazy, that's why.
 
-    //the addition of possible uriMatcher cases
-    static {
-        sUriMatcher.addURI(CONTENT_AUTHORITY, PATH_MOVIES, MOVIES);
-        sUriMatcher.addURI(CONTENT_AUTHORITY, PATH_MOVIES + "/#", MOVIE_ID);
+        // All paths added to the UriMatcher have a corresponding code to return when a match is
+        // found.  The code passed into the constructor represents the code to return for the root
+        // URI.  It's common to use NO_MATCH as the code for this case.
+        final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+        final String authority = CONTENT_AUTHORITY;
+
+        sUriMatcher.addURI(authority, PATH_MOVIES, MOVIES);
+        sUriMatcher.addURI(authority, PATH_MOVIES + "/#", MOVIE_ID);
+
+        return sUriMatcher;
     }
-
-    private MovieDbHelper mDbHelper;
 
     //create a connection with the mDbHelper to communicate with the database
     @Override
@@ -53,7 +61,7 @@ public class MovieProvider extends ContentProvider {
         Cursor cursor;
 
         //match the input uri the available cases
-        int match = sUriMatcher.match(uri);
+        int match = sUriMatcher().match(uri);
 
         switch (match) {
             case MOVIES:
@@ -71,9 +79,12 @@ public class MovieProvider extends ContentProvider {
                 cursor = database.query(MoviesSaved.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             default:
-
+                selection = MoviesSaved._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                cursor = database.query(MoviesSaved.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
                 //throw an exception if the input uri doesn't match any of the cases
-                throw new IllegalArgumentException("Cannot Query Unknown URI " + uri);
+            //throw new IllegalArgumentException("Cannot Query Unknown URI " + uri);
         }
 
         //notify the contentResolver of changes made
@@ -90,7 +101,7 @@ public class MovieProvider extends ContentProvider {
         //TODO: DATA VALIDATION SHOULD GO HERE
 
         Uri inserted;
-        int match = sUriMatcher.match(uri);
+        int match = sUriMatcher().match(uri);
         switch (match) {
 
             case MOVIES:
@@ -135,7 +146,7 @@ public class MovieProvider extends ContentProvider {
         int rowsDeleted = 0;
 
         //match the input uri to the available cases
-        int match = sUriMatcher.match(uri);
+        int match = sUriMatcher().match(uri);
         switch (match) {
             case MOVIES:
 
@@ -171,7 +182,7 @@ public class MovieProvider extends ContentProvider {
         int rowsUpdated = 0;
 
         //match the input uri to the available cases
-        int match = sUriMatcher.match(uri);
+        int match = sUriMatcher().match(uri);
         switch (match) {
             case MOVIES:
 
@@ -220,7 +231,7 @@ public class MovieProvider extends ContentProvider {
     public String getType(Uri uri) {
 
         //match the input uri to the available cases and return the correct String uri for the type
-        int match = sUriMatcher.match(uri);
+        int match = sUriMatcher().match(uri);
 
         switch (match) {
 

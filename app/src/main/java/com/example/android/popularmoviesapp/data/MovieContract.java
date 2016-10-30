@@ -1,6 +1,7 @@
 package com.example.android.popularmoviesapp.data;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -12,6 +13,10 @@ public final class MovieContract {
     public static final String PATH_MOVIES = "movies";
 
     private MovieContract() {
+    }
+
+    public static Uri buildMovieUri(long id) {
+        return ContentUris.withAppendedId(BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES).build(), id);
     }
 
     //table for the movies saved upon connection online.

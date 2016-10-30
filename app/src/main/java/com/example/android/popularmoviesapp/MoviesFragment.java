@@ -42,6 +42,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class MoviesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int MOVIE_LOADER = 0;
+    private static int COL__ID = 0;
     private GridCursorAdapter mMovieAdapter;
 
     //default constructor for the class
@@ -81,7 +82,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) ((Callback) getActivity())
-                        .onItemSelected(MovieContract.MoviesSaved.CONTENT_URI);
+                        .onItemSelected(MovieContract.buildMovieUri(cursor.getInt(COL__ID)));
             }
         });
 
