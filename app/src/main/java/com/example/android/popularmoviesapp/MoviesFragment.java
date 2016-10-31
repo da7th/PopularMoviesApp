@@ -77,12 +77,19 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
         //set the onItemClickListener for the gridView
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-
+                // CursorAdapter returns a cursor at the correct position for getItem(), or null
+                // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-                if (cursor != null) ((Callback) getActivity())
-                        .onItemSelected(MovieContract.buildMovieUri(cursor.getInt(COL__ID)));
+                if (cursor != null) {
+                    ((Callback) getActivity())
+                            .onItemSelected(MovieContract.buildMovieUri(
+                                    cursor.getInt(COL__ID)
+                            ));
+                }
             }
         });
 

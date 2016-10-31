@@ -32,14 +32,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     public DetailsFragment() {
     }
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,7 +50,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         thumbnailIV = (ImageView) rootView.findViewById(R.id.fragment_movies_details_thumbnail);
 
         return rootView;
-
     }
 
     @Override
