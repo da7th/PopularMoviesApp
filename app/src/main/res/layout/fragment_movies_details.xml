@@ -32,9 +32,9 @@
                 android:paddingLeft="34dp"
                 android:paddingRight="34dp"
                 android:paddingTop="50dp"
-                android:shadowColor="@android:color/black"
+                android:shadowColor="@android:color/holo_red_dark"
                 android:shadowRadius="20"
-                android:textColor="@android:color/holo_orange_light"
+                android:textColor="@color/colorPrimary"
                 android:textSize="40sp"
                 tools:text="Movie Title" />
 

@@ -5,11 +5,11 @@
     android:orientation="vertical">
 
   <ImageView
-    android:id="@+id/grid_item"
+      android:id="@+id/grid_item"
       android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+      android:layout_height="wrap_content"
       android:adjustViewBounds="true"
-      android:background="@android:color/black"
+      android:background="@drawable/touch_selector"
       android:scaleType="fitStart" />
 
   <ImageView
