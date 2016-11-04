@@ -31,7 +31,9 @@ public class GridCursorAdapter extends CursorAdapter {
 
         //get the poster path from the cursor input and use picasso to set it to a grid item.
         ImageView gridItem = (ImageView) view.findViewById(R.id.grid_item);
+        String title = cursor.getString(cursor.getColumnIndex(MovieContract.MoviesSaved.COLUMN_TITLE));
         String posterPath = cursor.getString(cursor.getColumnIndex(MovieContract.MoviesSaved.COLUMN_POSTER_PATH));
         Picasso.with(context).load(posterPath).into(gridItem);
+        gridItem.setContentDescription(title);
     }
 }

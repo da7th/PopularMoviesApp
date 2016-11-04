@@ -48,5 +48,8 @@ public final class MovieContract {
         public static final String COLUMN_VOTE_COUNT = "vote_count";
         public static final String COLUMN_VIDEO = "video";
         public static final String COLUMN_VOTE_AVERAGE = "vote_average";
+        public static final String COLUMN_TRAILER = "trailer";
+        public static final String COLUMN_REVIEWS = "reviews";
+
     }
 }

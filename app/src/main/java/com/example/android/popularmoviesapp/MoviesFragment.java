@@ -44,6 +44,8 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int MOVIE_LOADER = 0;
     private static int COL__ID = 0;
     private GridCursorAdapter mMovieAdapter;
+    private int mPosition;
+    private GridView mGridView;
 
     //default constructor for the class
     public MoviesFragment(){
@@ -61,7 +63,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     //the method for actually creating the fragment view.
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
 
         //initialise the cursor adapter with context and null cursor
         mMovieAdapter = new GridCursorAdapter(getContext(), null);
@@ -70,13 +72,13 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         //and also set the Movie cursor adapter to the gridView as well as the emptyView for the
         //grid
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
-        GridView gridView = (GridView) rootView.findViewById(R.id.movie_grid);
+        mGridView = (GridView) rootView.findViewById(R.id.movie_grid);
         View gridEmptyView = rootView.findViewById(R.id.grid_empty_view);
-        gridView.setAdapter(mMovieAdapter);
-        gridView.setEmptyView(gridEmptyView);
+        mGridView.setAdapter(mMovieAdapter);
+        mGridView.setEmptyView(gridEmptyView);
 
         //set the onItemClickListener for the gridView
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 
             @Override
@@ -84,6 +86,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 // CursorAdapter returns a cursor at the correct position for getItem(), or null
                 // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+                mPosition = position;
                 if (cursor != null) {
                     ((Callback) getActivity())
                             .onItemSelected(MovieContract.buildMovieUri(
@@ -93,7 +96,26 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             }
         });
 
+        if (savedInstanceState != null && savedInstanceState.containsKey("mPosition")) {
+            mPosition = savedInstanceState.getInt("mPosition", 0);
+        }
+
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        if (mPosition != GridView.INVALID_POSITION) {
+            outState.putInt("mPosition", mPosition);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
     }
 
     //
@@ -166,6 +188,10 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
         //swap the cursor in the cursorAdapter with the one passed on to this method
         mMovieAdapter.swapCursor(cursor);
+
+        if (mPosition != GridView.INVALID_POSITION) {
+            mGridView.setSelection(mPosition);
+        }
     }
 
     @Override
@@ -213,6 +239,8 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                         .appendQueryParameter(API_KEY, BuildConfig.MOVIES_DB_API_KEY)
                         .build();
                 URL movieDBUrl = new URL(movieDBUri.toString());
+
+                Log.v("the url:", movieDBUri.toString());
 
                 //performing the connection to the url
                 urlConnection = (HttpsURLConnection) movieDBUrl.openConnection();
@@ -367,7 +395,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
                 //insert the item to the database through the content provider
                 Uri inserted = getContext().getContentResolver().insert(MovieContract.MoviesSaved.CONTENT_URI, values);
-                Log.v(LOG_TAG, "database items inserted: " + inserted);
+                Log.v(LOG_TAG, "database items inserted: " + inserted + " id " + id);
 
                 //just logging the inserted items for debugging purposes
                 Log.d(MoviesFragment.class.getSimpleName(), title);
