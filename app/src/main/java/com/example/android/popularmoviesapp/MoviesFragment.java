@@ -240,8 +240,6 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                         .build();
                 URL movieDBUrl = new URL(movieDBUri.toString());
 
-                Log.v("the url:", movieDBUri.toString());
-
                 //performing the connection to the url
                 urlConnection = (HttpsURLConnection) movieDBUrl.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -308,6 +306,168 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             return null;
         }
 
+        private String getTrailer(int id) {
+
+            //initialise the connection parameters
+            HttpsURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            String trailerJsonStr = "";
+
+            //enclose in a try/catch due to multiple errors that can occur during the connection
+            // and data retrieval processes
+            try {
+
+                //url building parameters
+                final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie";
+                final String TRAILERS_MODE = "videos";
+                final String API_KEY = "api_key";
+
+                //building the uri and creating the full url
+                Uri movieDBUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
+                        .appendPath("" + id)
+                        .appendPath(TRAILERS_MODE)
+                        .appendQueryParameter(API_KEY, BuildConfig.MOVIES_DB_API_KEY)
+                        .build();
+                URL movieDBUrl = new URL(movieDBUri.toString());
+
+                //performing the connection to the url
+                urlConnection = (HttpsURLConnection) movieDBUrl.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                //initialise buffer, grab inputStream, and check the inputstream contents
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuilder buffer = new StringBuilder();
+
+                if (inputStream == null) {
+                    return null;
+                }
+
+                //set the contents of the bufferReader to the result of setting a new
+                // inputStreamReader on the inputStream, initialise a String variable line to store
+                // the String result line by line into the buffer, and finally check the whether or
+                // not the buffer is empty
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+                String line;
+                while ((line = reader.readLine()) != null) {
+
+                    buffer.append(line).append("\n");
+                }
+
+                if (buffer.length() == 0) {
+                    return null;
+                }
+
+                //convert the buffer to a string in order to proceed with extracting the data
+                trailerJsonStr = buffer.toString();
+
+                return trailerJsonStr;
+            } catch (IOException e) {
+
+                //error thrown during the connection and assigning the string result processes
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+
+                    //if the url is not disconnected by this point, disconnect the connection
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+
+                    //if the bufferReader is still open attempt to close it within a try/catch in
+                    // case there are errors
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return "No Trailers";
+        }
+
+        private String getReviews(int id) {
+
+            //initialise the connection parameters
+            HttpsURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            String reviewsJsonStr = "";
+
+            //enclose in a try/catch due to multiple errors that can occur during the connection
+            // and data retrieval processes
+            try {
+
+                //url building parameters
+                final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie";
+                final String TRAILERS_MODE = "reviews";
+                final String API_KEY = "api_key";
+
+                //building the uri and creating the full url
+                Uri movieDBUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
+                        .appendPath("" + id)
+                        .appendPath(TRAILERS_MODE)
+                        .appendQueryParameter(API_KEY, BuildConfig.MOVIES_DB_API_KEY)
+                        .build();
+                URL movieDBUrl = new URL(movieDBUri.toString());
+
+                //performing the connection to the url
+                urlConnection = (HttpsURLConnection) movieDBUrl.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                //initialise buffer, grab inputStream, and check the inputstream contents
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuilder buffer = new StringBuilder();
+
+                if (inputStream == null) {
+                    return null;
+                }
+
+                //set the contents of the bufferReader to the result of setting a new
+                // inputStreamReader on the inputStream, initialise a String variable line to store
+                // the String result line by line into the buffer, and finally check the whether or
+                // not the buffer is empty
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+                String line;
+                while ((line = reader.readLine()) != null) {
+
+                    buffer.append(line).append("\n");
+                }
+
+                if (buffer.length() == 0) {
+                    return null;
+                }
+
+                //convert the buffer to a string in order to proceed with extracting the data
+                reviewsJsonStr = buffer.toString();
+
+                return reviewsJsonStr;
+            } catch (IOException e) {
+
+                //error thrown during the connection and assigning the string result processes
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+
+                    //if the url is not disconnected by this point, disconnect the connection
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+
+                    //if the bufferReader is still open attempt to close it within a try/catch in
+                    // case there are errors
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return "No Reviews";
+        }
+
         //method to extract the data from the json string, extract the values for each object and
         // store them in a database
         private void getMovieDataFromJson(String movieJsonStr) throws JSONException {
@@ -350,7 +510,6 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             //if the connection is successful and a new set of data is acquired delete the old data
             // from the database
             int delete = getContext().getContentResolver().delete(MovieContract.MoviesSaved.CONTENT_URI, null, null);
-            Log.v(LOG_TAG, "database items deleted: " + delete);
 
             //a loop through all the objects within the jsonArray to be stored into a databse
             for (int i = 0; i < resultsArray.length(); i++) {
@@ -392,13 +551,16 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 values.put(MovieContract.MoviesSaved.COLUMN_VOTE_COUNT, voteCount);
                 values.put(MovieContract.MoviesSaved.COLUMN_VIDEO, video);
                 values.put(MovieContract.MoviesSaved.COLUMN_VOTE_AVERAGE, voteAverage);
+                values.put(MovieContract.MoviesSaved.COLUMN_TRAILER, getTrailer(id));
+                values.put(MovieContract.MoviesSaved.COLUMN_REVIEWS, getReviews(id));
 
                 //insert the item to the database through the content provider
                 Uri inserted = getContext().getContentResolver().insert(MovieContract.MoviesSaved.CONTENT_URI, values);
-                Log.v(LOG_TAG, "database items inserted: " + inserted + " id " + id);
 
                 //just logging the inserted items for debugging purposes
                 Log.d(MoviesFragment.class.getSimpleName(), title);
+
+
             }
         }
     }
