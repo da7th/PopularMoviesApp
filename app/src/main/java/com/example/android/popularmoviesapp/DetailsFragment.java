@@ -3,6 +3,7 @@ package com.example.android.popularmoviesapp;
 
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -38,6 +39,8 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     TextView releaseDateTV;
     ImageView thumbnailIV;
     ListView trailers;
+    FetchTrailerTask trailersTask;
+    TrailerAdapter adapter;
     private Uri mUri;
     private String[] mReviews;
 
@@ -62,13 +65,10 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         thumbnailIV = (ImageView) rootView.findViewById(R.id.fragment_movies_details_thumbnail);
         trailers = (ListView) rootView.findViewById(R.id.trailer_list);
 
+        adapter = new TrailerAdapter(getContext(), null);
+        trailersTask = new FetchTrailerTask();
+
         return rootView;
-    }
-
-    private void populateTrailers(String jsonString) {
-
-
-
     }
 
     @Override
@@ -107,14 +107,49 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
 
             Picasso.with(getActivity()).load(data.getString(9)).into((ImageView) getActivity().findViewById(R.id.image_backdrop_background));
 
-//            populateTrailers(data.getString(14));
+            trailersTask.execute(data.getString(14));
 
-            String trailerJsonStr = data.getString(14);
+            if (trailersTask.getStatus() != AsyncTask.Status.FINISHED) {
+
+                Log.v("onLoadFinished", "done");
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter = new TrailerAdapter(getContext(), mTrailers);
+                        trailers.setAdapter(adapter);
+                    }
+                });
+
+            }
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+
+    private class FetchTrailerTask extends AsyncTask<Object, Object, Void> {
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Log.v("onPostExecute:", "finished supposedly");
+
+
+        }
+
+        @Override
+        protected Void doInBackground(Object... params) {
+
+            Object trailerJsonStr = params[0];
             String trailerPath = "";
             //find the root object and extract the jsonArray
             JSONObject rootObject = null;
             try {
-                rootObject = new JSONObject(trailerJsonStr);
+                rootObject = new JSONObject((String) trailerJsonStr);
 
                 JSONArray resultsArray = rootObject.getJSONArray("results");
                 String[] links = new String[resultsArray.length()];
@@ -134,100 +169,43 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                 e.printStackTrace();
             }
 
-            TrailerAdapter adapter = new TrailerAdapter(getContext(), mTrailers);
-            trailers.setAdapter(adapter);
-
-
-//            trailersTask = new FetchTrailerTask();
-//            trailersTask.execute(data.getString(14));
-//
-//            if(trailersTask.getStatus() != AsyncTask.Status.FINISHED){
-//
-//                Log.v("onLoadFinished", "done");
-//
-//
-//            }
+            return null;
         }
     }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+    private class fetchReviewsTask extends AsyncTask<String, Void, String[]> {
+
+        @Override
+        protected String[] doInBackground(String... params) {
+
+            String trailerJsonStr = params[0];
+            String trailerPath = "";
+
+            //find the root object and extract the jsonArray
+            JSONObject rootObject = null;
+
+            try {
+                rootObject = new JSONObject(trailerJsonStr);
+
+                JSONArray resultsArray = rootObject.getJSONArray("results");
+                String[] links = new String[resultsArray.length()];
+
+                for (int i = 0; i < resultsArray.length(); i++) {
+
+                    JSONObject trailerObject = resultsArray.getJSONObject(i);
+
+                    trailerPath = trailerObject.getString("key");
+
+                    links[i] = "https://www.youtube.com/watch?v=" + trailerPath;
+
+                }
+
+                return links;
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }
-
-
-//    private class FetchTrailerTask extends AsyncTask<Object, Object, Void> {
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            Log.v("onpostexecute:","finished supposedly");
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Object... params) {
-//
-//            Object trailerJsonStr = params[0];
-//            String trailerPath = "";
-//            //find the root object and extract the jsonArray
-//            JSONObject rootObject = null;
-//            try {
-//                rootObject = new JSONObject((String) trailerJsonStr);
-//
-//                JSONArray resultsArray = rootObject.getJSONArray("results");
-//                String[] links = new String[resultsArray.length()];
-//
-//                for (int i = 0; i < resultsArray.length(); i++) {
-//
-//                    JSONObject trailerObject = resultsArray.getJSONObject(i);
-//
-//                    trailerPath = trailerObject.getString("key");
-//
-//                    links[i] = "https://www.youtube.com/watch?v=" + trailerPath;
-//                    Log.v("Links: ", links[i]);
-//                    mTrailers.add(i, links[i]);
-//                }
-//
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//
-//            return null;
-//        }
-//    }
-//
-//    private class fetchReviewsTask extends AsyncTask<String,Void,String[]>{
-//
-//        @Override
-//        protected String[] doInBackground(String... params) {
-//
-//            String trailerJsonStr = params[0];
-//            String trailerPath = "";
-//
-//            //find the root object and extract the jsonArray
-//            JSONObject rootObject = null;
-//
-//            try {
-//                rootObject = new JSONObject(trailerJsonStr);
-//
-//                JSONArray resultsArray = rootObject.getJSONArray("results");
-//                String[] links = new String[resultsArray.length()];
-//
-//                for (int i = 0; i < resultsArray.length(); i++) {
-//
-//                    JSONObject trailerObject = resultsArray.getJSONObject(i);
-//
-//                    trailerPath = trailerObject.getString("key");
-//
-//                    links[i] = "https://www.youtube.com/watch?v=" + trailerPath;
-//
-//                }
-//
-//                return links;
-//
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-//    }
-//}
