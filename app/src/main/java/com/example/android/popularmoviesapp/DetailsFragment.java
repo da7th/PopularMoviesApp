@@ -1,6 +1,7 @@
 package com.example.android.popularmoviesapp;
 
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
@@ -197,8 +198,23 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
             trailersTask.execute(data.getString(14));
 
             mFav = data.getInt(16);
+
             mCursor = data;
 
+            Uri favCheckUri = ContentUris.withAppendedId(MovieContract.FavMovies.CONTENT_URI, data.getInt(0));
+
+            Cursor favCheckCursor = getActivity().getContentResolver().query(favCheckUri, null, null, null, null);
+
+            int favCheck = 0;
+
+            if (favCheckCursor.getCount() > 0) {
+
+                favCheck = favCheckCursor.getInt(16);
+            }
+
+            Log.v("onLoadFinished:", "favCheck is: " + favCheck);
+
+            mFav = favCheck;
 
             if (mFav == 1) {
 
