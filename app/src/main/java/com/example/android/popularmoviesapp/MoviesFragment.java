@@ -553,6 +553,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 values.put(MovieContract.MoviesSaved.COLUMN_VOTE_AVERAGE, voteAverage);
                 values.put(MovieContract.MoviesSaved.COLUMN_TRAILER, getTrailer(id));
                 values.put(MovieContract.MoviesSaved.COLUMN_REVIEWS, getReviews(id));
+                values.put(MovieContract.MoviesSaved.COLUMN_FAV, 0);
 
                 //insert the item to the database through the content provider
                 Uri inserted = getContext().getContentResolver().insert(MovieContract.MoviesSaved.CONTENT_URI, values);

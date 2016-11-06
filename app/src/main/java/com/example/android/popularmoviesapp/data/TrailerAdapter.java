@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.example.android.popularmoviesapp.R;
 
@@ -26,11 +27,17 @@ public class TrailerAdapter extends ArrayAdapter<String> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         View listItemView = convertView;
+
         if (listItemView != null) {
             listItemView = LayoutInflater.from(getContext()).inflate(R.layout.item_list_trailer, parent, false);
         }
 
-        return listItemView;
+        String currentString = getItem(0);
 
+        TextView trailerTV = (TextView) listItemView.findViewById(R.id.trailer_title);
+        trailerTV.setText(currentString);
+
+
+        return listItemView;
     }
 }

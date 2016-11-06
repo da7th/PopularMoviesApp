@@ -82,6 +82,7 @@
                     tools:text="8.1/10" />
 
                 <Button
+                    android:id="@+id/mark_fav_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="#123643"

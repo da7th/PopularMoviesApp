@@ -40,11 +40,12 @@ public class Movie implements Parcelable {
     private double mVoteAverage;
     private String mTrailer;
     private String mReviews;
+    private int mFav;
 
     //define the movie object
     public Movie(String posterPath, Boolean adult, String overview, String releaseDate, int id,
                  String originalTitle, String originalLanguage, String title, String backdropPath,
-                 long popularity, int voteCount, Boolean video, double voteAverage, String trailer, String reviews) {
+                 long popularity, int voteCount, Boolean video, double voteAverage, String trailer, String reviews, int fav) {
 
         mPosterPath = posterPath;
         mAdult = adult;
@@ -61,6 +62,7 @@ public class Movie implements Parcelable {
         mVoteAverage = voteAverage;
         mTrailer = trailer;
         mReviews = reviews;
+        mFav = fav;
     }
 
     //the movie parcelable object creation
@@ -80,6 +82,7 @@ public class Movie implements Parcelable {
         this.mVoteAverage = in.readDouble();
         this.mTrailer = in.readString();
         this.mReviews = in.readString();
+        this.mFav = in.readInt();
     }
 
     //the movie parcelable object types and defaults if needed
@@ -99,6 +102,7 @@ public class Movie implements Parcelable {
         dest.writeDouble(mVoteAverage);
         dest.writeString(mTrailer);
         dest.writeString(mReviews);
+        dest.writeInt(mFav);
     }
 
     //not sure what this is...?
@@ -166,6 +170,10 @@ public class Movie implements Parcelable {
 
     public String getReviews() {
         return mReviews;
+    }
+
+    public int getFav() {
+        return mFav;
     }
 
 }
