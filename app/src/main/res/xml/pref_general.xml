@@ -2,11 +2,18 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
-        android:title="@string/pref_sort_title"
-        android:key="@string/pref_sort_key"
         android:defaultValue="@string/sort_options_value_popular"
         android:entries="@array/pref_sort_options_labels"
-        android:entryValues="@array/pref_sort_options_values" />
+        android:entryValues="@array/pref_sort_options_values"
+        android:key="@string/pref_sort_key"
+        android:title="@string/pref_sort_title" />
+
+    <!--<ListPreference-->
+    <!--android:title="@string/pref_update_title"-->
+    <!--android:key="@string/pref_update_key"-->
+    <!--android:defaultValue="@integer/daily_value"-->
+    <!--android:entries="@array/pref_weekly_update_labels"-->
+    <!--android:entryValues="@array/pref_weekly_update_values" />-->
 
 
 </PreferenceScreen>

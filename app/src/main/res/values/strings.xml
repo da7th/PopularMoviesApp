@@ -18,6 +18,46 @@
         <item>@string/sort_options_value_popular</item>
     </array>
 
+    <string name="sunday_label">Sunday</string>
+    <string name="monday_label">Monday</string>
+    <string name="tuesday_label">Tuesday</string>
+    <string name="wednesday_label">Wednesday</string>
+    <string name="thursday_label">Thursday</string>
+    <string name="friday_label">Friday</string>
+    <string name="saturday_label">Saturday</string>
+    <string name="daily_label">Daily Update</string>
+    <integer name="sunday_value" translatable="false">1</integer>
+    <integer name="monday_value" translatable="false">2</integer>
+    <integer name="tuesday_value" translatable="false">3</integer>
+    <integer name="wednesday_value" translatable="false">4</integer>
+    <integer name="thursday_value" translatable="false">5</integer>
+    <integer name="friday_value" translatable="false">6</integer>
+    <integer name="saturday_value" translatable="false">7</integer>
+    <integer name="daily_value" translatable="false">0</integer>
+    <string name="pref_update_key" translatable="false">updating</string>
+    <string name="pref_update_title">Weekly Update</string>
+
+    <array name="pref_weekly_update_labels">
+        <item>@string/sunday_label</item>
+        <item>@string/monday_label</item>
+        <item>@string/tuesday_label</item>
+        <item>@string/wednesday_label</item>
+        <item>@string/thursday_label</item>
+        <item>@string/friday_label</item>
+        <item>@string/saturday_label</item>
+        <item>@string/daily_label</item>
+    </array>
+
+    <array name="pref_weekly_update_values">
+        <item>@integer/sunday_value</item>
+        <item>@integer/monday_value</item>
+        <item>@integer/tuesday_value</item>
+        <item>@integer/wednesday_value</item>
+        <item>@integer/thursday_value</item>
+        <item>@integer/friday_value</item>
+        <item>@integer/saturday_value</item>
+        <item>@integer/daily_value</item>
+    </array>
 
     <string name="action_sort">Sort Movies</string>
 

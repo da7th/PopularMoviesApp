@@ -47,6 +47,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     private GridCursorAdapter mMovieAdapter;
     private int mPosition;
     private GridView mGridView;
+    private int today;
 
     //default constructor for the class
     public MoviesFragment(){
@@ -56,8 +57,9 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Calendar dayOfWeek = Calendar.getInstance();
-        int today = dayOfWeek.get(Calendar.DAY_OF_WEEK);
+        today = dayOfWeek.get(Calendar.DAY_OF_WEEK);
 
         Toast.makeText(getContext(), "toasting" + today, Toast.LENGTH_LONG).show();
         //this activity has an options menu
@@ -228,10 +230,12 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             BufferedReader reader = null;
             String movieJsonStr = "";
 
+//            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//            int updateDay = prefs.getInt(getString(R.string.pref_update_key), (R.integer.daily_value));
+
             //enclose in a try/catch due to multiple errors that can occur during the connection
             // and data retrieval processes
             try {
-
 
                 //url building parameters
                 final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie";
@@ -299,6 +303,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                     }
                 }
             }
+
 
             //attempt to invoke the getMovieDataFromJson helper method to extract the data from the
             // json string created above, any errors are caught and printed (stackTrace, Log.e)
