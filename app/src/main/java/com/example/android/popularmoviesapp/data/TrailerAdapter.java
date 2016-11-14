@@ -28,14 +28,14 @@ public class TrailerAdapter extends ArrayAdapter<String> {
 
         View listItemView = convertView;
 
-        if (listItemView != null) {
+        if (listItemView == null) {
             listItemView = LayoutInflater.from(getContext()).inflate(R.layout.item_list_trailer, parent, false);
         }
 
-        String currentString = getItem(0);
+        String currentString = getItem(position);
 
         TextView trailerTV = (TextView) listItemView.findViewById(R.id.trailer_title);
-        trailerTV.setText(currentString);
+        trailerTV.setContentDescription(currentString);
 
 
         return listItemView;

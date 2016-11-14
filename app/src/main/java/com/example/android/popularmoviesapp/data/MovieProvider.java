@@ -93,8 +93,7 @@ public class MovieProvider extends ContentProvider {
 
                 //if the uri is matched to a specific id, then the selection is set to the _id and
                 // the selectionArgs is set to the input id to be retrieved
-                selection = MovieContract.FavMovies._ID + "=?";
-                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                selection = MovieContract.FavMovies.COLUMN_TITLE + "=?";
                 cursor = database.query(MovieContract.FavMovies.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             default:

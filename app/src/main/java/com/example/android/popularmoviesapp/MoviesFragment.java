@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Calendar;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -55,7 +56,10 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Calendar dayOfWeek = Calendar.getInstance();
+        int today = dayOfWeek.get(Calendar.DAY_OF_WEEK);
 
+        Toast.makeText(getContext(), "toasting" + today, Toast.LENGTH_LONG).show();
         //this activity has an options menu
         setHasOptionsMenu(true);
     }
@@ -227,6 +231,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             //enclose in a try/catch due to multiple errors that can occur during the connection
             // and data retrieval processes
             try {
+
 
                 //url building parameters
                 final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie";

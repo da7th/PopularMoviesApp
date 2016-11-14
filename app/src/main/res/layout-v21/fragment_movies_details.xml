@@ -110,20 +110,18 @@
                 android:paddingRight="16dp"
                 tools:text="AJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJAJJJJJJJJJJJJJJJ" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_margin="16dp"
-                android:background="#123643" />
-
 
         </LinearLayout>
     </ScrollView>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Trailers:" />
+        android:background="@android:color/black"
+        android:elevation="10dp"
+        android:text="Trailers:"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -135,21 +133,24 @@
             android:id="@+id/trailer_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary">
+            android:layout_weight="1">
 
         </ListView>
     </LinearLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Reviews:" />
+        android:background="@android:color/black"
+        android:elevation="10dp"
+        android:text="Reviews:"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
 
     <ListView
         android:id="@+id/review_list"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0dp"
         android:layout_weight="1">
 
 

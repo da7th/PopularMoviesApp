@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -49,6 +50,8 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     Button favBtn;
     int mFav;
     Cursor mCursor;
+    int currentId;
+    int i;
     private Uri mUri;
     private String[] mReviews;
 
@@ -58,6 +61,10 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        i = 0;
+
+        mFav = 0;
+        mCursor = null;
 
         Bundle arguments = getArguments();
         if (arguments != null) {
@@ -75,8 +82,9 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
 
         favBtn = (Button) rootView.findViewById(R.id.mark_fav_button);
 
-        mFav = 0;
-        mCursor = null;
+        trailersTask = new FetchTrailerTask();
+        adapter = new TrailerAdapter(getContext(), mTrailers);
+        trailers.setAdapter(adapter);
 
         favBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +94,11 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                     favBtn.setText("A Favourite!");
 
                     if (mCursor != null) {
+                        try {
+                            int update = getContext().getContentResolver().update(ContentUris.withAppendedId(MovieContract.MoviesSaved.CONTENT_URI, currentId), getContentValues(mCursor), null, null);
+                        } catch (Exception e) {
+                            Log.e("Update Failed:", MovieContract.MoviesSaved.CONTENT_URI.toString() + currentId);
+                        }
                         Uri inserted = getContext().getContentResolver().insert(MovieContract.FavMovies.CONTENT_URI, getContentValues(mCursor));
                     }
                 }
@@ -93,9 +106,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                 Toast.makeText(getContext(), "clicking me works!", Toast.LENGTH_SHORT).show();
             }
         });
-
-        adapter = new TrailerAdapter(getContext(), null);
-        trailersTask = new FetchTrailerTask();
 
         return rootView;
     }
@@ -190,29 +200,33 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
             overviewTV.setText(data.getString(3));
             ratingsTV.setText(data.getDouble(13) + "/10 (" + data.getString(11) + ")");
             releaseDateTV.setText(data.getString(4).substring(0, 4));
-
             Picasso.with(getActivity()).load(data.getString(1)).into(thumbnailIV);
-
             Picasso.with(getActivity()).load(data.getString(9)).into((ImageView) getActivity().findViewById(R.id.image_backdrop_background));
 
-            trailersTask.execute(data.getString(14));
+
+            if (i == 0) {
+
+                trailersTask.execute(data.getString(14));
+                i = 5;
+            }
 
             mFav = data.getInt(16);
-
             mCursor = data;
+            currentId = -1;
+            currentId = data.getInt(0);
 
-            Uri favCheckUri = ContentUris.withAppendedId(MovieContract.FavMovies.CONTENT_URI, data.getInt(0));
+            Uri favCheckUri = ContentUris.withAppendedId(MovieContract.FavMovies.CONTENT_URI, currentId);
 
-            Cursor favCheckCursor = getActivity().getContentResolver().query(favCheckUri, null, null, null, null);
+            Cursor favCheckCursor = getActivity().getContentResolver().query(favCheckUri, null, null, new String[]{data.getString(8)}, null);
 
             int favCheck = 0;
 
             if (favCheckCursor.getCount() > 0) {
 
-                favCheck = favCheckCursor.getInt(16);
+                favCheck = favCheckCursor.getInt(0);
             }
 
-            Log.v("onLoadFinished:", "favCheck is: " + favCheck);
+            Log.v("onLoadFinished:", "favCheck is: " + favCheck + "currentID is: " + currentId);
 
             mFav = favCheck;
 
@@ -221,19 +235,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                 favBtn.setText("A Favourite!");
             }
 
-
-//            if (trailersTask.getStatus() != AsyncTask.Status.FINISHED) {
-//
-//                Log.v("onLoadFinished", "done");
-//                getActivity().runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        adapter = new TrailerAdapter(getContext(), mTrailers);
-//                        trailers.setAdapter(adapter);
-//                    }
-//                });
-//
-//            }
         }
     }
 
@@ -242,8 +243,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////
-
 
     private class FetchTrailerTask extends AsyncTask<Object, Object, Void> {
 
@@ -251,6 +250,12 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         protected void onPostExecute(Void aVoid) {
             Log.v("onPostExecute:", "finished supposedly");
 
+            trailers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(getContext(), "TOASTing", Toast.LENGTH_SHORT).show();
+                }
+            });
 
         }
 
