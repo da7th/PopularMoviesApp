@@ -1,8 +1,10 @@
 package com.example.android.popularmoviesapp;
 
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -253,7 +255,19 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
             trailers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Toast.makeText(getContext(), "TOASTing", Toast.LENGTH_SHORT).show();
+
+                    String link = adapter.getItem((int) id);
+                    String linkId = link.substring(32);
+
+                    Intent youtubeIntentMob = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + linkId));
+                    youtubeIntentMob.putExtra("VIDEO_ID", linkId);
+                    Intent youtubeIntent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(link));
+                    try {
+                        startActivity(youtubeIntentMob);
+                    } catch (ActivityNotFoundException ex) {
+//                        startActivity(youtubeIntent);
+                    }
                 }
             });
 

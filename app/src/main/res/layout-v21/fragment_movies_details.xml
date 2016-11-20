@@ -117,7 +117,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/black"
+        android:background="@color/colorPrimary"
         android:elevation="10dp"
         android:text="Trailers:"
         android:textColor="@android:color/white"
@@ -141,7 +141,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/black"
+        android:background="@color/colorPrimary"
         android:elevation="10dp"
         android:text="Reviews:"
         android:textColor="@android:color/white"

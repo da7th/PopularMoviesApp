@@ -73,7 +73,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity
         }
 
         i++;
-        if (i == 3) {
+        if (i == 2) {
 
             //a variable and increment, to return the user to the main activity after a setting has been selected
             startActivity(new Intent(this, MainActivity.class));
