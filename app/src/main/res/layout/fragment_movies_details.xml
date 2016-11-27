@@ -27,6 +27,7 @@
                     android:id="@+id/image_backdrop_background"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
+                    android:minHeight="200dp"
                     android:scaleType="fitXY"
                     tools:src="@mipmap/ic_launcher" />
 
@@ -114,45 +115,46 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_margin="16dp"
-                android:background="#123643" />
+                android:background="@android:color/black" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="10dp"
+                android:padding="8dp"
+                android:text="Trailers:"
+                android:textSize="16sp" />
 
+            <com.example.android.popularmoviesapp.data.ListViewNoScroll
+                android:id="@+id/trailer_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+            </com.example.android.popularmoviesapp.data.ListViewNoScroll>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="16dp"
+                android:background="@android:color/black" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="10dp"
+                android:padding="8dp"
+                android:text="Reviews:"
+                android:textSize="16sp" />
+
+            <com.example.android.popularmoviesapp.data.ListViewNoScroll
+                android:id="@+id/review_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+            </com.example.android.popularmoviesapp.data.ListViewNoScroll>
         </LinearLayout>
     </ScrollView>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Trailers:" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <ListViewNoScroll
-            android:id="@+id/trailer_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary">
-
-        </ListViewNoScroll>
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Reviews:" />
-
-    <ListViewNoScroll
-        android:id="@+id/review_list"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_weight="1">
-
-
-    </ListViewNoScroll>
-
 </LinearLayout>

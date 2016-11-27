@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -272,7 +273,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.v("onPostExecute:", "finished supposedly");
 
             trailers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -315,7 +315,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                     trailerPath = trailerObject.getString("key");
 
                     links[i] = "https://www.youtube.com/watch?v=" + trailerPath;
-                    Log.v("Links: ", links[i]);
+
                     mTrailers.add(i, links[i]);
                 }
 
@@ -332,7 +332,19 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
 
         @Override
         protected void onPostExecute(String[] strings) {
-            super.onPostExecute(strings);
+
+            reviews.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    String review = (String) reviewsAdapter.getItem((int) id);
+
+                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                    alertDialog.setMessage(review);
+                    alertDialog.show();
+                }
+            });
+
         }
 
         @Override
@@ -355,8 +367,18 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                     JSONObject reviewObject = resultsArray.getJSONObject(i);
 
                     review = reviewObject.getString("content");
+                }
+                Log.v("checking:", review);
+                reviews = review.split("\n");
 
-                    reviews[i] = review;
+                int count = 0;
+                for (int i = 0; i < reviews.length; i++) {
+
+                    reviews[i] = reviews[i].trim();
+                    if (!reviews[i].isEmpty() && !reviews[i].contains("**") && !reviews[i].contains("_")) {
+                        mReviews.add(count, reviews[i]);
+                        count++;
+                    }
 
                 }
 

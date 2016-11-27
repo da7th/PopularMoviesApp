@@ -27,6 +27,7 @@
                     android:id="@+id/image_backdrop_background"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
+                    android:minHeight="200dp"
                     android:scaleType="fitXY"
                     tools:src="@mipmap/ic_launcher" />
 
@@ -112,8 +113,15 @@
 
             <TextView
                 android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="16dp"
+                android:background="@android:color/black" />
+
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="10dp"
+                android:padding="8dp"
                 android:text="Trailers:"
                 android:textSize="16sp" />
 
@@ -125,17 +133,19 @@
 
             </com.example.android.popularmoviesapp.data.ListViewNoScroll>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="16dp"
+                android:background="@android:color/black" />
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:background="@android:color/black"
                 android:elevation="10dp"
-                android:gravity="bottom"
+                android:padding="8dp"
                 android:text="Reviews:"
-                android:textColor="@android:color/white"
                 android:textSize="16sp" />
 
             <com.example.android.popularmoviesapp.data.ListViewNoScroll
