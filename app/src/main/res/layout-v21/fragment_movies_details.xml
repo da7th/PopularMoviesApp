@@ -129,13 +129,13 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <ListView
+        <com.example.android.popularmoviesapp.data.ListViewNoScroll
             android:id="@+id/trailer_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1">
 
-        </ListView>
+        </com.example.android.popularmoviesapp.data.ListViewNoScroll>
     </LinearLayout>
 
     <TextView
@@ -153,12 +153,12 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <ListView
+        <com.example.android.popularmoviesapp.data.ListViewNoScroll
             android:id="@+id/review_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1">
 
-        </ListView>
+        </com.example.android.popularmoviesapp.data.ListViewNoScroll>
     </LinearLayout>
 </LinearLayout>

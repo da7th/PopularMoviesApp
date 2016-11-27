@@ -19,13 +19,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.popularmoviesapp.data.ListViewNoScroll;
 import com.example.android.popularmoviesapp.data.MovieContract;
+import com.example.android.popularmoviesapp.data.ReviewAdapter;
 import com.example.android.popularmoviesapp.data.TrailerAdapter;
 import com.squareup.picasso.Picasso;
 
@@ -41,21 +43,25 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     static final String DETAIL_URI = "URI";
     private static final int DETAIL_LOADER = 0;
     private final ArrayList<String> mTrailers = new ArrayList<String>();
+    private final ArrayList<String> mReviews = new ArrayList<String>();
     TextView titleTV;
     TextView overviewTV;
     TextView ratingsTV;
     TextView releaseDateTV;
     ImageView thumbnailIV;
-    ListView trailers;
+    ImageView backdropIV;
+    ListViewNoScroll trailers;
+    ListViewNoScroll reviews;
     FetchTrailerTask trailersTask;
+    FetchReviewsTask reviewsTask;
     TrailerAdapter adapter;
+    ArrayAdapter reviewsAdapter;
     Button favBtn;
     int mFav;
     Cursor mCursor;
     int currentId;
     int i;
     private Uri mUri;
-    private String[] mReviews;
 
     public DetailsFragment() {
     }
@@ -80,13 +86,20 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         ratingsTV = (TextView) rootView.findViewById(R.id.fragment_movies_details_rating);
         releaseDateTV = (TextView) rootView.findViewById(R.id.fragment_movies_details_release_date);
         thumbnailIV = (ImageView) rootView.findViewById(R.id.fragment_movies_details_thumbnail);
-        trailers = (ListView) rootView.findViewById(R.id.trailer_list);
+        backdropIV = (ImageView) rootView.findViewById(R.id.image_backdrop_background);
+        trailers = (ListViewNoScroll) rootView.findViewById(R.id.trailer_list);
+        reviews = (ListViewNoScroll) rootView.findViewById(R.id.review_list);
 
         favBtn = (Button) rootView.findViewById(R.id.mark_fav_button);
 
         trailersTask = new FetchTrailerTask();
+        reviewsTask = new FetchReviewsTask();
+
         adapter = new TrailerAdapter(getContext(), mTrailers);
+        reviewsAdapter = new ReviewAdapter(getContext(), mReviews);
+
         trailers.setAdapter(adapter);
+        reviews.setAdapter(reviewsAdapter);
 
         favBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,12 +216,21 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
             ratingsTV.setText(data.getDouble(13) + "/10 (" + data.getString(11) + ")");
             releaseDateTV.setText(data.getString(4).substring(0, 4));
             Picasso.with(getActivity()).load(data.getString(1)).into(thumbnailIV);
-            Picasso.with(getActivity()).load(data.getString(9)).into((ImageView) getActivity().findViewById(R.id.image_backdrop_background));
+            Picasso.with(getActivity()).load(data.getString(9)).into(backdropIV);
+
+            if (titleTV.getLineCount() > 2) {
+                backdropIV.getLayoutParams().height = (int) (titleTV.getLineCount() * titleTV.getMeasuredHeight() * 0.67);
+                backdropIV.requestLayout();
+            }
+
+
+
 
 
             if (i == 0) {
 
                 trailersTask.execute(data.getString(14));
+                reviewsTask.execute(data.getString(15));
                 i = 5;
             }
 
@@ -305,34 +327,40 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         }
     }
 
-    private class fetchReviewsTask extends AsyncTask<String, Void, String[]> {
+    private class FetchReviewsTask extends AsyncTask<String, Void, String[]> {
+
+
+        @Override
+        protected void onPostExecute(String[] strings) {
+            super.onPostExecute(strings);
+        }
 
         @Override
         protected String[] doInBackground(String... params) {
 
-            String trailerJsonStr = params[0];
-            String trailerPath = "";
+            String reviewJsonStr = params[0];
+            String review = "";
 
             //find the root object and extract the jsonArray
             JSONObject rootObject = null;
 
             try {
-                rootObject = new JSONObject(trailerJsonStr);
+                rootObject = new JSONObject(reviewJsonStr);
 
                 JSONArray resultsArray = rootObject.getJSONArray("results");
-                String[] links = new String[resultsArray.length()];
+                String[] reviews = new String[resultsArray.length()];
 
                 for (int i = 0; i < resultsArray.length(); i++) {
 
-                    JSONObject trailerObject = resultsArray.getJSONObject(i);
+                    JSONObject reviewObject = resultsArray.getJSONObject(i);
 
-                    trailerPath = trailerObject.getString("key");
+                    review = reviewObject.getString("content");
 
-                    links[i] = "https://www.youtube.com/watch?v=" + trailerPath;
+                    reviews[i] = review;
 
                 }
 
-                return links;
+                return reviews;
 
             } catch (JSONException e) {
                 e.printStackTrace();
