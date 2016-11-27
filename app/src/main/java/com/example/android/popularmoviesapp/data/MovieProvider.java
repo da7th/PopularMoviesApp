@@ -14,9 +14,7 @@ import com.example.android.popularmoviesapp.data.MovieContract.MoviesSaved;
 
 import static com.example.android.popularmoviesapp.data.MovieContract.CONTENT_AUTHORITY;
 import static com.example.android.popularmoviesapp.data.MovieContract.MoviesSaved.TABLE_NAME;
-import static com.example.android.popularmoviesapp.data.MovieContract.PATH_FAV;
 import static com.example.android.popularmoviesapp.data.MovieContract.PATH_MOVIES;
-import static com.example.android.popularmoviesapp.data.MovieContract.PATH_MOVIES_POPULAR;
 
 
 public class MovieProvider extends ContentProvider {
@@ -47,10 +45,10 @@ public class MovieProvider extends ContentProvider {
 
         sUriMatcher.addURI(authority, PATH_MOVIES, MOVIES);
         sUriMatcher.addURI(authority, PATH_MOVIES + "/#", MOVIE_ID);
-        sUriMatcher.addURI(authority, PATH_MOVIES + "/" + PATH_FAV, FAV);
-        sUriMatcher.addURI(authority, PATH_MOVIES + "/" + PATH_FAV + "/#", FAV_ID);
-        sUriMatcher.addURI(authority, PATH_MOVIES + "/" + PATH_MOVIES_POPULAR, POPULAR_MOVIES);
-        sUriMatcher.addURI(authority, PATH_MOVIES + "/" + PATH_MOVIES_POPULAR + "/#", POPULAR_MOVIE_ID);
+        sUriMatcher.addURI(authority, PATH_MOVIES, FAV);
+        sUriMatcher.addURI(authority, PATH_MOVIES + "/#", FAV_ID);
+        sUriMatcher.addURI(authority, PATH_MOVIES, POPULAR_MOVIES);
+        sUriMatcher.addURI(authority, PATH_MOVIES + "/#", POPULAR_MOVIE_ID);
 
         return sUriMatcher;
     }
@@ -112,7 +110,7 @@ public class MovieProvider extends ContentProvider {
 
                 //if the uri is matched to a specific id, then the selection is set to the _id and
                 // the selectionArgs is set to the input id to be retrieved
-                selection = MovieContract.FavMovies.COLUMN_TITLE + "=?";
+                selection = MovieContract.MoviesSavedPopularity.COLUMN_TITLE + "=?";
                 cursor = database.query(MovieContract.MoviesSavedPopularity.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             default:
@@ -368,13 +366,13 @@ public class MovieProvider extends ContentProvider {
             case MOVIES:
                 return MoviesSaved.CONTENT_TYPE;
             case FAV:
-                return MovieContract.FavMovies.CONTENT_ITEM_TYPE;
-            case FAV_ID:
                 return MovieContract.FavMovies.CONTENT_TYPE;
+            case FAV_ID:
+                return MovieContract.FavMovies.CONTENT_ITEM_TYPE;
             case POPULAR_MOVIES:
-                return MovieContract.MoviesSavedPopularity.CONTENT_ITEM_TYPE;
-            case POPULAR_MOVIE_ID:
                 return MovieContract.MoviesSavedPopularity.CONTENT_TYPE;
+            case POPULAR_MOVIE_ID:
+                return MovieContract.MoviesSavedPopularity.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
