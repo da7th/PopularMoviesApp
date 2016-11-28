@@ -4,18 +4,22 @@
     <string name="pref_sort_key" translatable="false">sorting</string>
     <string name="pref_sort_title">Sort Movies</string>
     <string name="sort_options_label_popular">Sort by popularity</string>
-    <string name="sort_options_label_latest">Sort by top rated</string>
+    <string name="sort_options_label_top_rated">Sort by top rated</string>
+    <string name="sort_options_label_fav">Sort by favourite</string>
     <string name="sort_options_value_popular" translatable="false">popular</string>
-    <string name="sort_options_value_latest" translatable="false">top_rated</string>
+    <string name="sort_options_value_top_rated" translatable="false">top_rated</string>
+    <string name="sort_options_value_fav" translatable="false">fav</string>
 
     <array name="pref_sort_options_labels">
-        <item>@string/sort_options_label_latest</item>
+        <item>@string/sort_options_label_top_rated</item>
         <item>@string/sort_options_label_popular</item>
+        <item>@string/sort_options_label_fav</item>
     </array>
 
     <array name="pref_sort_options_values">
-        <item>@string/sort_options_value_latest</item>
+        <item>@string/sort_options_value_top_rated</item>
         <item>@string/sort_options_value_popular</item>
+        <item>@string/sort_options_value_fav</item>
     </array>
 
     <string name="sunday_label">Sunday</string>

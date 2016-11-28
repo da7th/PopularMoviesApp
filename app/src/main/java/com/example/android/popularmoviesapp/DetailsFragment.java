@@ -71,7 +71,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         i = 0;
-
         mFav = 0;
         mCursor = null;
 
@@ -246,10 +245,10 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
 
             int favCheck = 0;
 
-            if (favCheckCursor.getCount() > 0) {
-
-                favCheck = favCheckCursor.getInt(0);
-            }
+//            if (favCheckCursor.getCount() > 0) {
+//
+//                favCheck = favCheckCursor.getInt(0);
+//            }
 
             Log.v("onLoadFinished:", "favCheck is: " + favCheck + "currentID is: " + currentId);
 
