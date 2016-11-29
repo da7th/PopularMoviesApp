@@ -115,8 +115,6 @@ public class MovieProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
 
-        //TODO: DATA VALIDATION SHOULD GO HERE
-
         Uri inserted;
         int match = sUriMatcher().match(uri);
         switch (match) {

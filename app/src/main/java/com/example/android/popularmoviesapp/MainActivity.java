@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.facebook.stetho.Stetho;
+
 public class MainActivity extends AppCompatActivity implements MoviesFragment.Callback {
 
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
@@ -17,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.Ca
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Stetho.initializeWithDefaults(this);
         //this will show me the database.
         //SqlScoutServer.create(this, getPackageName());
 
