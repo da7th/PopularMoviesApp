@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.Ca
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        Stetho.initializeWithDefaults(this);
+        //Stetho.initializeWithDefaults(this);
         //this will show me the database.
         //SqlScoutServer.create(this, getPackageName());
 
