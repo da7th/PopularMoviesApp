@@ -43,11 +43,13 @@ import javax.net.ssl.HttpsURLConnection;
 public class MoviesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int MOVIE_LOADER = 0;
+    private static final int FAV_MOVIE_LOADER = 1;
     private static int COL__ID = 0;
     private GridCursorAdapter mMovieAdapter;
     private int mPosition;
     private GridView mGridView;
     private int today;
+    private int table_used;
 
     //default constructor for the class
     public MoviesFragment(){
@@ -61,7 +63,6 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         Calendar dayOfWeek = Calendar.getInstance();
         today = dayOfWeek.get(Calendar.DAY_OF_WEEK);
 
-        Toast.makeText(getContext(), "toasting" + today, Toast.LENGTH_LONG).show();
         //this activity has an options menu
         setHasOptionsMenu(true);
     }
@@ -94,10 +95,21 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 mPosition = position;
                 if (cursor != null) {
-                    ((Callback) getActivity())
-                            .onItemSelected(MovieContract.buildMovieUri(
-                                    cursor.getInt(COL__ID)
-                            ));
+
+                    if (table_used == 1) {
+                        ((Callback) getActivity())
+                                .onItemSelected(MovieContract.buildMovieUri(
+                                        cursor.getInt(COL__ID)
+                                ));
+                    } else {
+                        ((Callback) getActivity())
+                                .onItemSelected(MovieContract.buildFavUri(
+                                        cursor.getInt(COL__ID)
+                                ));
+                    }
+
+
+
                 }
             }
         });
@@ -131,6 +143,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         // Prepare the loader. Either re-connect with an existing one,
         // or start a new one.
         getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+        getLoaderManager().initLoader(FAV_MOVIE_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -148,7 +161,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
         if (networkInfo != null && networkInfo.isConnected()) {
 
-        populateGrid();
+            populateGrid();
         } else {
 
             Toast.makeText(getContext(), "Unable to establish connection error.", Toast.LENGTH_LONG).show();
@@ -164,8 +177,13 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortOption = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.sort_options_value_popular));
 
-        //execute the fetchMovies task with the sorting option attached
-        fetchMovies.execute(sortOption);
+        if (sortOption.equals("fav")) {
+
+        } else {
+            table_used = 1;
+            //execute the fetchMovies task with the sorting option attached
+            fetchMovies.execute(sortOption);
+        }
     }
 
     @Override
@@ -176,17 +194,36 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        //the sorting order for the loaded items
-        //in ascending order of the item's _id
-        String sortOrder = MovieContract.MoviesSaved._ID + " ASC";
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortOption = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.sort_options_value_popular));
 
-        //define the new cursor loader.
-        return new CursorLoader(getActivity(),
-                MovieContract.MoviesSaved.CONTENT_URI,
-                null,
-                null,
-                null,
-                sortOrder);
+        if (sortOption.equals("fav")) {
+            //the sorting order for the loaded items
+            //in ascending order of the item's _id
+            String sortOrder = MovieContract.FavMovies._ID + " ASC";
+
+            //define the new cursor loader.
+            return new CursorLoader(getActivity(),
+                    MovieContract.FavMovies.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    sortOrder);
+        } else {
+            //the sorting order for the loaded items
+            //in ascending order of the item's _id
+            String sortOrder = MovieContract.MoviesSaved._ID + " ASC";
+
+            //define the new cursor loader.
+            return new CursorLoader(getActivity(),
+                    MovieContract.MoviesSaved.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    sortOrder);
+        }
+
+
     }
 
     @Override
@@ -569,7 +606,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 Uri inserted = getContext().getContentResolver().insert(MovieContract.MoviesSaved.CONTENT_URI, values);
 
                 //just logging the inserted items for debugging purposes
-                Log.d(MoviesFragment.class.getSimpleName(), title);
+//                Log.d(MoviesFragment.class.getSimpleName(), title);
 
 
             }

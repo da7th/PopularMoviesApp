@@ -14,6 +14,7 @@ import com.example.android.popularmoviesapp.data.MovieContract.MoviesSaved;
 
 import static com.example.android.popularmoviesapp.data.MovieContract.CONTENT_AUTHORITY;
 import static com.example.android.popularmoviesapp.data.MovieContract.MoviesSaved.TABLE_NAME;
+import static com.example.android.popularmoviesapp.data.MovieContract.PATH_FAV;
 import static com.example.android.popularmoviesapp.data.MovieContract.PATH_MOVIES;
 
 
@@ -26,9 +27,6 @@ public class MovieProvider extends ContentProvider {
     private static final int MOVIE_ID = 101;
     private static final int FAV = 102;
     private static final int FAV_ID = 103;
-    private static final int POPULAR_MOVIES = 104;
-    private static final int POPULAR_MOVIE_ID = 105;
-
     private MovieDbHelper mDbHelper;
 
     //uri matcher initialised as a NO_MATCH by default
@@ -45,10 +43,10 @@ public class MovieProvider extends ContentProvider {
 
         sUriMatcher.addURI(authority, PATH_MOVIES, MOVIES);
         sUriMatcher.addURI(authority, PATH_MOVIES + "/#", MOVIE_ID);
-        sUriMatcher.addURI(authority, PATH_MOVIES, FAV);
-        sUriMatcher.addURI(authority, PATH_MOVIES + "/#", FAV_ID);
-        sUriMatcher.addURI(authority, PATH_MOVIES, POPULAR_MOVIES);
-        sUriMatcher.addURI(authority, PATH_MOVIES + "/#", POPULAR_MOVIE_ID);
+        sUriMatcher.addURI(authority, PATH_FAV, FAV);
+        sUriMatcher.addURI(authority, PATH_FAV + "/#", FAV_ID);
+//        sUriMatcher.addURI(authority, PATH_MOVIES + "/" + PATH_FAV, FAV);
+//        sUriMatcher.addURI(authority, PATH_MOVIES + "/" + PATH_FAV + "/#", FAV_ID);
 
         return sUriMatcher;
     }
@@ -97,21 +95,9 @@ public class MovieProvider extends ContentProvider {
 
                 //if the uri is matched to a specific id, then the selection is set to the _id and
                 // the selectionArgs is set to the input id to be retrieved
-                selection = MovieContract.FavMovies.COLUMN_TITLE + "=?";
+                selection = MovieContract.FavMovies._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 cursor = database.query(MovieContract.FavMovies.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
-                break;
-            case POPULAR_MOVIES:
-
-                //if the uri is matched to all movies in the database then the return cursor is set
-                // to all the movies.
-                cursor = database.query(MovieContract.MoviesSavedPopularity.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
-                break;
-            case POPULAR_MOVIE_ID:
-
-                //if the uri is matched to a specific id, then the selection is set to the _id and
-                // the selectionArgs is set to the input id to be retrieved
-                selection = MovieContract.MoviesSavedPopularity.COLUMN_TITLE + "=?";
-                cursor = database.query(MovieContract.MoviesSavedPopularity.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             default:
 
@@ -132,8 +118,6 @@ public class MovieProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
 
-        //TODO: DATA VALIDATION SHOULD GO HERE
-
         Uri inserted;
         int match = sUriMatcher().match(uri);
         switch (match) {
@@ -142,9 +126,6 @@ public class MovieProvider extends ContentProvider {
                 inserted = insertMovie(uri, values);
                 break;
             case FAV:
-                inserted = insertFavMovie(uri, values);
-                break;
-            case POPULAR_MOVIES:
                 inserted = insertFavMovie(uri, values);
                 break;
             default:
@@ -232,19 +213,6 @@ public class MovieProvider extends ContentProvider {
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 rowsDeleted = database.delete(MovieContract.FavMovies.TABLE_NAME, selection, selectionArgs);
                 break;
-            case POPULAR_MOVIES:
-
-                //this case deletes all entries from the database
-                rowsDeleted = database.delete(MovieContract.MoviesSavedPopularity.TABLE_NAME, selection, selectionArgs);
-                break;
-            case POPULAR_MOVIE_ID:
-
-                //if the uri is matched to a specific id, then the selection is set to the _id and
-                // the selectionArgs is set to the input id to be deleted
-                selection = MovieContract.MoviesSavedPopularity._ID + "=?";
-                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                rowsDeleted = database.delete(MovieContract.MoviesSavedPopularity.TABLE_NAME, selection, selectionArgs);
-                break;
             default:
 
                 //an exceptions is thrown for an unmatched case
@@ -289,18 +257,6 @@ public class MovieProvider extends ContentProvider {
 
                 //for the case of a single item, replace the item at the given id with the new input values.
                 selection = MovieContract.FavMovies._ID + "=?";
-                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                rowsUpdated = updateFavMovie(uri, values, selection, selectionArgs);
-                break;
-            case POPULAR_MOVIES:
-
-                //for the case of all items, replace all the content with the input parameters
-                rowsUpdated = update(uri, values, selection, selectionArgs);
-                break;
-            case POPULAR_MOVIE_ID:
-
-                //for the case of a single item, replace the item at the given id with the new input values.
-                selection = MovieContract.MoviesSavedPopularity._ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 rowsUpdated = updateFavMovie(uri, values, selection, selectionArgs);
                 break;
@@ -369,10 +325,6 @@ public class MovieProvider extends ContentProvider {
                 return MovieContract.FavMovies.CONTENT_TYPE;
             case FAV_ID:
                 return MovieContract.FavMovies.CONTENT_ITEM_TYPE;
-            case POPULAR_MOVIES:
-                return MovieContract.MoviesSavedPopularity.CONTENT_TYPE;
-            case POPULAR_MOVIE_ID:
-                return MovieContract.MoviesSavedPopularity.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

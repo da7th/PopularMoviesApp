@@ -24,7 +24,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmoviesapp.data.ListViewNoScroll;
 import com.example.android.popularmoviesapp.data.MovieContract;
@@ -71,7 +70,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         i = 0;
-
         mFav = 0;
         mCursor = null;
 
@@ -119,7 +117,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                     }
                 }
 
-                Toast.makeText(getContext(), "clicking me works!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -224,10 +221,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                 backdropIV.requestLayout();
             }
 
-
-
-
-
             if (i == 0) {
 
                 trailersTask.execute(data.getString(14));
@@ -239,21 +232,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
             mCursor = data;
             currentId = -1;
             currentId = data.getInt(0);
-
-            Uri favCheckUri = ContentUris.withAppendedId(MovieContract.FavMovies.CONTENT_URI, currentId);
-
-            Cursor favCheckCursor = getActivity().getContentResolver().query(favCheckUri, null, null, new String[]{data.getString(8)}, null);
-
-            int favCheck = 0;
-
-            if (favCheckCursor.getCount() > 0) {
-
-                favCheck = favCheckCursor.getInt(0);
-            }
-
-            Log.v("onLoadFinished:", "favCheck is: " + favCheck + "currentID is: " + currentId);
-
-            mFav = favCheck;
 
             if (mFav == 1) {
 
@@ -368,7 +346,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
 
                     review = reviewObject.getString("content");
                 }
-                Log.v("checking:", review);
+
                 reviews = review.split("\n");
 
                 int count = 0;

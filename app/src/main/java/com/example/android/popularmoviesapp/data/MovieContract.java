@@ -20,6 +20,9 @@ public final class MovieContract {
     public static Uri buildMovieUri(long id) {
         return ContentUris.withAppendedId(BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES).build(), id);
     }
+    public static Uri buildFavUri(long id) {
+        return ContentUris.withAppendedId(BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAV).build(), id);
+    }
 
     //table for the movies saved upon connection online.
     public static final class MoviesSaved implements BaseColumns {
