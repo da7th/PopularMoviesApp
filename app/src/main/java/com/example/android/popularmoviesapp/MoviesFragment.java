@@ -1,5 +1,6 @@
 package com.example.android.popularmoviesapp;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -45,12 +46,12 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int MOVIE_LOADER = 0;
     private static final int FAV_MOVIE_LOADER = 1;
     private static int COL__ID = 0;
+    ProgressDialog progress;
     private GridCursorAdapter mMovieAdapter;
     private int mPosition;
     private GridView mGridView;
     private int today;
     private int table_used;
-
     //default constructor for the class
     public MoviesFragment(){
     }
@@ -256,6 +257,23 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     public class fetchMoviesTask extends AsyncTask<String, Void, Void> {
 
         final private String LOG_TAG = fetchMoviesTask.class.getSimpleName();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress = new ProgressDialog(getActivity());
+            progress.setMessage("Just a sec...");
+            progress.setIndeterminate(false);
+            progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progress.setCancelable(false);
+            progress.show();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progress.dismiss();
+        }
 
         //the specific background execution method with the input being the String for the sort
         // type to get the data from
