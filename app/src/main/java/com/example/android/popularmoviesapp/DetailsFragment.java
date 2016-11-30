@@ -221,10 +221,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                 backdropIV.requestLayout();
             }
 
-
-
-
-
             if (i == 0) {
 
                 trailersTask.execute(data.getString(14));
@@ -236,21 +232,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
             mCursor = data;
             currentId = -1;
             currentId = data.getInt(0);
-
-            Uri favCheckUri = ContentUris.withAppendedId(MovieContract.FavMovies.CONTENT_URI, currentId);
-
-            Cursor favCheckCursor = getActivity().getContentResolver().query(favCheckUri, null, null, new String[]{data.getString(8)}, null);
-
-            int favCheck = 0;
-
-//            if (favCheckCursor.getCount() > 0) {
-//
-//                favCheck = favCheckCursor.getInt(0);
-//            }
-
-            Log.v("onLoadFinished:", "favCheck is: " + favCheck + "currentID is: " + currentId);
-
-            mFav = favCheck;
 
             if (mFav == 1) {
 
