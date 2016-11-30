@@ -63,7 +63,6 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         Calendar dayOfWeek = Calendar.getInstance();
         today = dayOfWeek.get(Calendar.DAY_OF_WEEK);
 
-        Toast.makeText(getContext(), "toasting" + today, Toast.LENGTH_LONG).show();
         //this activity has an options menu
         setHasOptionsMenu(true);
     }
@@ -96,10 +95,21 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 mPosition = position;
                 if (cursor != null) {
-                    ((Callback) getActivity())
-                            .onItemSelected(MovieContract.buildMovieUri(
-                                    cursor.getInt(COL__ID)
-                            ));
+
+                    if (table_used == 1) {
+                        ((Callback) getActivity())
+                                .onItemSelected(MovieContract.buildMovieUri(
+                                        cursor.getInt(COL__ID)
+                                ));
+                    } else {
+                        ((Callback) getActivity())
+                                .onItemSelected(MovieContract.buildFavUri(
+                                        cursor.getInt(COL__ID)
+                                ));
+                    }
+
+
+
                 }
             }
         });
@@ -596,7 +606,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 Uri inserted = getContext().getContentResolver().insert(MovieContract.MoviesSaved.CONTENT_URI, values);
 
                 //just logging the inserted items for debugging purposes
-                Log.d(MoviesFragment.class.getSimpleName(), title);
+//                Log.d(MoviesFragment.class.getSimpleName(), title);
 
 
             }

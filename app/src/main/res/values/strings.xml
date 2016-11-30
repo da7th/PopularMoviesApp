@@ -68,7 +68,7 @@
     <string name="settings_label">Settings</string>
 
     <string name="poster_quality">w300</string>
-    <string name="backdrop_quality">w500</string>
+    <string name="backdrop_quality">w300</string>
 
     <string name="empty_view_message">Getting a fresh batch!\nLoading&#8230;</string>
 </resources>

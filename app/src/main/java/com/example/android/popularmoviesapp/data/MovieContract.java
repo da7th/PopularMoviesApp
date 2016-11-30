@@ -20,6 +20,10 @@ public final class MovieContract {
         return ContentUris.withAppendedId(BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES).build(), id);
     }
 
+    public static Uri buildFavUri(long id) {
+        return ContentUris.withAppendedId(BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAV).build(), id);
+    }
+
     //table for the movies saved upon connection online.
     public static final class MoviesSaved implements BaseColumns {
 
@@ -60,11 +64,11 @@ public final class MovieContract {
         //the following two variables are for the content types used in the getType method in the
         // content provider for getting the type of the uri
         public static final String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIES + PATH_FAV;
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_FAV;
         public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIES + PATH_FAV + "/#";
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_FAV + "/#";
 
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES).appendPath(PATH_FAV).build();
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAV).build();
 
         public static final String TABLE_NAME = "fav_movies";
 

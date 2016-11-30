@@ -24,7 +24,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmoviesapp.data.ListViewNoScroll;
 import com.example.android.popularmoviesapp.data.MovieContract;
@@ -118,7 +117,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                     }
                 }
 
-                Toast.makeText(getContext(), "clicking me works!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -367,7 +365,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
 
                     review = reviewObject.getString("content");
                 }
-                Log.v("checking:", review);
+
                 reviews = review.split("\n");
 
                 int count = 0;
